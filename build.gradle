@@ -11,7 +11,7 @@ apply plugin: 'application'
 
 
 sourceCompatibility = 1.8
-mainClassName = 'HelloApp'
+mainClassName = 'app.HelloApp'
 
 repositories {
     mavenCentral()
