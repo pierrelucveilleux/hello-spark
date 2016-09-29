@@ -19,6 +19,7 @@ repositories {
 
 dependencies {
     compile 'com.sparkjava:spark-core:2.5'
+    compile group: 'net.sourceforge.argparse4j', name: 'argparse4j', version: '0.7.0'
     testCompile 'junit:junit:4.11'
 }
 
