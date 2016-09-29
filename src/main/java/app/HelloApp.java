@@ -4,11 +4,13 @@ import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
+import spark.Redirect;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static spark.Spark.get;
 import static spark.Spark.port;
+import static spark.Spark.redirect;
 
 public class HelloApp {
     public static void main(String[] args) {
@@ -23,6 +25,8 @@ public class HelloApp {
 
         port(namespace.getInt("port"));
 
+        redirect.get("/", "/hello");
+        
         get("/hello", (request, response) -> "Hello World");
         get("/hello/:name", (request, response) -> "Hello: " + request.params(":name"));
     }
