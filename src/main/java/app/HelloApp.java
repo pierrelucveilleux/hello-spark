@@ -1,16 +1,15 @@
 package app;
 
+import app.domain.Message;
+import com.google.gson.Gson;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
-import spark.Redirect;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
-import static spark.Spark.get;
-import static spark.Spark.port;
-import static spark.Spark.redirect;
+import static spark.Spark.*;
 
 public class HelloApp {
     public static void main(String[] args) {
@@ -26,9 +25,12 @@ public class HelloApp {
         port(namespace.getInt("port"));
 
         redirect.get("/", "/hello");
-        
+
+        Gson gson = new Gson();
         get("/hello", (request, response) -> "Hello World");
         get("/hello/:name", (request, response) -> "Hello: " + request.params(":name"));
+        get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);
+        get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);
     }
 
     private static Namespace parseArguments(ArgumentParser parser, String[] args) {
