@@ -23,7 +23,7 @@ public class CreateSubscription implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
 
-        logger.info("Create");
+        logger.info("Create: " + request.body());
         request.queryParams().forEach((k) -> logger.info("Item : " + k + " Value: " + asList(request.queryParamsValues(k))));
 
         response.type("application/json");
