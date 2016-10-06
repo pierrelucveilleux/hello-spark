@@ -14,7 +14,7 @@ public class CreateSubscription implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
 
-        logger.info("Create to " + request.queryString());
+        logger.info("Create to " + request);
         return new ApiResult("account-123", true);
     }
 }

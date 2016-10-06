@@ -13,7 +13,7 @@ public class CancelSubscription implements Route {
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        logger.info("Cancel + " + request.queryString());
+        logger.info("Cancel + " + request);
         return new ApiResult("account-123", true);
     }
 }
