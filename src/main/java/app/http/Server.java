@@ -41,8 +41,8 @@ public class Server {
         get("/login", new LoginUser());
         post("/authenticate", new AuthenticatUser(authenticationService));
 
-        get("/subscription/create", new CreateSubscription(), gson::toJson);
-        get("/subscription/cancel", new CancelSubscription(), gson::toJson);
+        get("/subscription/create", new CreateSubscription(gson));
+        get("/subscription/cancel", new CancelSubscription(gson));
         get("/hello/:name", (request, response) -> "Hello: " + request.params(":name"));
         get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);
         get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);
