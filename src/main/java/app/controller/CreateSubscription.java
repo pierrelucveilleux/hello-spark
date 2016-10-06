@@ -24,6 +24,7 @@ public class CreateSubscription implements Route {
     public Object handle(Request request, Response response) throws Exception {
 
         logger.info("Create: " + request.uri() + ",  " + request.body());
+        request.headers().forEach((h) -> logger.info("Header : " + h + " Value: " + request.headers(h)));
         request.queryParams().forEach((k) -> logger.info("Item : " + k + " Value: " + asList(request.queryParamsValues(k))));
 
         response.type("application/json");
