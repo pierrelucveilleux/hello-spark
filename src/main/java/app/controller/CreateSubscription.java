@@ -8,6 +8,8 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import static java.util.Arrays.asList;
+
 public class CreateSubscription implements Route {
 
     private Logger logger = LoggerFactory.getLogger(CreateSubscription.class);
@@ -21,7 +23,8 @@ public class CreateSubscription implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
 
-        logger.info("Create to " + request);
+        logger.info("Create");
+        request.queryParams().forEach((k) -> logger.info("Item : " + k + " Value: " + asList(request.queryParamsValues(k))));
 
         response.type("application/json");
         return gson.toJson(new ApiResult("account-123", true));

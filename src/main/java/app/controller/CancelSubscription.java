@@ -8,6 +8,8 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import static java.util.Arrays.asList;
+
 public class CancelSubscription implements Route {
 
     private Logger logger = LoggerFactory.getLogger(CancelSubscription.class);
@@ -21,6 +23,8 @@ public class CancelSubscription implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
         logger.info("Cancel + " + request);
+
+        request.queryParams().forEach((k) -> logger.info("Item : " + k + " Value: " + asList(request.queryParamsValues(k))));
 
         response.type("application/json");
         return gson.toJson(new ApiResult("account-123", true));
