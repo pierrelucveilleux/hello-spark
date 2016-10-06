@@ -1,9 +1,10 @@
 package app.http;
 
+import app.controller.CancelSubscription;
+import app.controller.CreateSubscription;
 import app.HelloApp;
 import app.auth.AuthenticationService;
 import app.auth.MemoryAuthenticationService;
-import app.controller.HttpBinGet;
 import app.controller.AuthenticatUser;
 import app.controller.LoginUser;
 import app.domain.Message;
@@ -30,6 +31,8 @@ public class Server {
         List<String> publicPaths = new ArrayList<>();
         publicPaths.add("/");
         publicPaths.add("/login");
+        publicPaths.add("/subscription/create");
+        publicPaths.add("/subscription/cancel");
 
         AuthenticationService authenticationService = new MemoryAuthenticationService();
 
@@ -38,7 +41,8 @@ public class Server {
         get("/login", new LoginUser());
         post("/authenticate", new AuthenticatUser(authenticationService));
 
-        get("/rest", new HttpBinGet());
+        get("/subscription/create", new CreateSubscription(), gson::toJson);
+        get("/subscription/cancel", new CancelSubscription(), gson::toJson);
         get("/hello/:name", (request, response) -> "Hello: " + request.params(":name"));
         get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);
         get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);
