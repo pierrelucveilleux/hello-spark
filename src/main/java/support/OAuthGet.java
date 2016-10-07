@@ -3,13 +3,11 @@ package support;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.basic.DefaultOAuthConsumer;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import static java.util.stream.Collectors.joining;
 
 
 public class OAuthGet {
@@ -24,12 +22,11 @@ public class OAuthGet {
 
     public String execute(String endpoint) throws Exception {
 
-        OAuthConsumer consumer = new DefaultOAuthConsumer(consumerKey, consumerSecret);
-
         URL url = new URL(endpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        consumer.sign(connection);
         connection.addRequestProperty("Accept", "application/json");
+        OAuthConsumer consumer = new DefaultOAuthConsumer(consumerKey, consumerSecret);
+        consumer.sign(connection);
 
         connection.connect();
 
@@ -40,7 +37,14 @@ public class OAuthGet {
         }
     }
 
-    private String read(InputStream inputStream) {
-        return new BufferedReader(new InputStreamReader(inputStream)).lines().collect(joining("\n"));
+    private String read(InputStream inputStream) throws IOException {
+//        return new BufferedReader(new InputStreamReader(inputStream)).lines().collect(joining("\n"));
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+            result.write(buffer, 0, length);
+        }
+        return result.toString("UTF-8");
     }
 }
