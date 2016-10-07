@@ -2,11 +2,16 @@ package app.account;
 
 public class Account {
 
-    private final String id;
-    private final String name;
+    enum PricingModel {
+        Free,
+        Premium
+    }
 
-    public Account(String id, String name) {
+    private final String id;
+    private final PricingModel pricingModel;
+
+    public Account(String id, PricingModel pricingModel) {
         this.id = id;
-        this.name = name;
+        this.pricingModel = pricingModel;
     }
 }

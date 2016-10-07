@@ -10,16 +10,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class MemoryAccountRepositoryTest  {
 
     private AccountRepository accountRepository;
+    private String someAccount;
 
     @Before
     public void setUp() throws Exception {
         accountRepository = new MemoryAccountRepository();
-        accountRepository.create("some-id", "Some Name");
+        someAccount = accountRepository.create(Account.PricingModel.Free);
     }
 
     @Test
     public void findAnAccountById() throws Exception {
-        Account account = accountRepository.findAccount("some-id");
+        Account account = accountRepository.findAccount(someAccount);
         assertThat(account, not(nullValue()));
     }
 }

@@ -1,11 +1,8 @@
 package app.http;
 
+import app.HelloApp;
 import app.controller.CancelSubscription;
 import app.controller.CreateSubscription;
-import app.HelloApp;
-import app.auth.AuthenticationService;
-import app.auth.MemoryAuthenticationService;
-import app.controller.AuthenticatUser;
 import app.controller.LoginUser;
 import app.domain.Message;
 import com.google.gson.Gson;
@@ -31,15 +28,13 @@ public class Server {
         List<String> publicPaths = new ArrayList<>();
         publicPaths.add("/");
         publicPaths.add("/login");
-        publicPaths.add("/subscription/create");
-        publicPaths.add("/subscription/cancel");
+        publicPaths.add("/api/subscription/create");
+        publicPaths.add("/api/subscription/cancel");
 
-        AuthenticationService authenticationService = new MemoryAuthenticationService();
-
-        before(new AuthenticationFilter(authenticationService, publicPaths));
+//        before("/api/*", new RequiresAuthenticationFilter(config, "FacebookClient"));
 
         get("/login", new LoginUser());
-        post("/authenticate", new AuthenticatUser(authenticationService));
+//        post("/authenticate", new AuthenticatUser(authenticationService));
 
         get("/subscription/create", new CreateSubscription(gson));
         get("/subscription/cancel", new CancelSubscription(gson));
