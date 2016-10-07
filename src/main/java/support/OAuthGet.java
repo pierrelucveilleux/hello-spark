@@ -29,8 +29,7 @@ public class OAuthGet {
         consumer.sign(connection);
 
         connection.connect();
-
-        if (connection.getResponseCode() >= 200 && connection.getResponseCode() <= 400) {
+        if (connection.getResponseCode() >= 200 && connection.getResponseCode() < 400) {
             return read(connection.getInputStream());
         } else {
             throw new Exception("Request to " + url + " failed with status " + connection.getResponseCode());

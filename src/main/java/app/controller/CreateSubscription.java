@@ -29,7 +29,7 @@ public class CreateSubscription implements Route {
         request.queryParams().forEach((k) -> logger.info("Item : " + k + " Value: " + asList(request.queryParamsValues(k))));
 
         String eventUrl = request.queryParams("eventUrl");
-        OAuthGet oAuthGet = new OAuthGet("job-138569", "bYgQiPVXkCIkAkdL");
+        OAuthGet oAuthGet = new OAuthGet("job-138569", "xYTtH7x1Du0Y");
 
         String body = oAuthGet.execute(eventUrl);
         logger.info("Body: " + body);
