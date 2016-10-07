@@ -1,8 +1,5 @@
 package support;
 
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.basic.DefaultOAuthConsumer;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,8 +22,8 @@ public class OAuthGet {
         URL url = new URL(endpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.addRequestProperty("Accept", "application/json");
-        OAuthConsumer consumer = new DefaultOAuthConsumer(consumerKey, consumerSecret);
-        consumer.sign(connection);
+//        OAuthConsumer consumer = new DefaultOAuthConsumer(consumerKey, consumerSecret);
+//        consumer.sign(connection);
 
         connection.connect();
         if (connection.getResponseCode() >= 200 && connection.getResponseCode() < 400) {
