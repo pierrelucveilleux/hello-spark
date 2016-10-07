@@ -1,6 +1,8 @@
 package app.controller;
 
 import app.domain.ApiResult;
+import app.market.SubsciptionReader;
+import app.market.SubscriptionEvent;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +17,12 @@ public class CreateSubscription implements Route {
 
     private Logger logger = LoggerFactory.getLogger(CreateSubscription.class);
 
+    private final SubsciptionReader subsciptionReader;
     private final Gson gson;
 
     public CreateSubscription(Gson gson) {
         this.gson = gson;
+        this.subsciptionReader = new SubsciptionReader(gson);
     }
 
     @Override
@@ -32,6 +36,7 @@ public class CreateSubscription implements Route {
         OAuthGet oAuthGet = new OAuthGet("job-138569", "xYTtH7x1Du0Y");
 
         String body = oAuthGet.execute(eventUrl);
+        SubscriptionEvent subscriptionEvent = subsciptionReader.read(body);
         logger.info("Body: " + body);
 
         response.type("application/json");
