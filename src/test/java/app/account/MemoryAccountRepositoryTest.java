@@ -20,7 +20,7 @@ public class MemoryAccountRepositoryTest  {
 
     @Test
     public void findAnAccountById() throws Exception {
-        Account account = accountRepository.findAccount(someAccount);
+        Account account = accountRepository.find(someAccount);
         assertThat(account, not(nullValue()));
     }
 }

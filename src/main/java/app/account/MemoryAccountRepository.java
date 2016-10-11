@@ -9,7 +9,7 @@ public class MemoryAccountRepository implements AccountRepository {
     private Map<String, Account> accounts = new HashMap<>();
 
     @Override
-    public Account findAccount(String id) {
+    public Account find(String id) {
         return accounts.get(id);
     }
 
