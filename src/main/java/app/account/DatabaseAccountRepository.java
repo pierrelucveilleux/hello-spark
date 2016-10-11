@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import static app.account.Account.PricingModel.fromValue;
 import static org.jooq.SQLDialect.MYSQL;
 import static org.jooq.conf.StatementType.PREPARED_STATEMENT;
 import static org.jooq.impl.DSL.*;
@@ -26,10 +27,10 @@ public class DatabaseAccountRepository implements AccountRepository {
     public Account find(String id) {
         try {
             Record accountRead = database(dataSource.getConnection())
-                    .select(field("id")).from(table("account"))
+                    .select(field("id"), field("pricing")).from(table("account"))
                     .where(field("id").eq(id))
                     .fetchOne();
-            return new Account((String)accountRead.getValue("id"), Account.PricingModel.Free);
+            return new Account((String)accountRead.getValue("id"), fromValue((String) accountRead.getValue("pricing")));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,8 +43,8 @@ public class DatabaseAccountRepository implements AccountRepository {
             String id = UUID.randomUUID().toString();
             int created = database(dataSource.getConnection())
                     .insertInto(table("account"),
-                            field("id"))
-                    .values(id)
+                            field("id"), field("pricing"))
+                    .values(id, pricingModel.name())
                     .returning()
                     .execute();
             if(created == 1) {
