@@ -1,18 +1,16 @@
 package app.account;
 
-import org.jooq.DSLContext;
 import org.jooq.Record;
-import org.jooq.conf.Settings;
+import support.database.DatabaseException;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.UUID;
 
 import static app.account.Account.PricingModel.fromValue;
-import static org.jooq.SQLDialect.MYSQL;
-import static org.jooq.conf.StatementType.PREPARED_STATEMENT;
-import static org.jooq.impl.DSL.*;
+import static org.jooq.impl.DSL.field;
+import static org.jooq.impl.DSL.table;
+import static support.database.DatabaseContext.database;
 
 
 public class DatabaseAccountRepository implements AccountRepository {
@@ -30,33 +28,29 @@ public class DatabaseAccountRepository implements AccountRepository {
                     .select(field("id"), field("pricing")).from(table("account"))
                     .where(field("id").eq(id))
                     .fetchOne();
-            return new Account((String)accountRead.getValue("id"), fromValue((String) accountRead.getValue("pricing")));
+            return new Account((String) accountRead.getValue("id"), fromValue((String) accountRead.getValue("pricing")));
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Cannot find account with id:" + id, e);
         }
-        return null;
     }
 
     @Override
     public String create(Account.PricingModel pricingModel) {
+        String id = UUID.randomUUID().toString();
         try {
-            String id = UUID.randomUUID().toString();
             int created = database(dataSource.getConnection())
                     .insertInto(table("account"),
                             field("id"), field("pricing"))
                     .values(id, pricingModel.name())
                     .returning()
                     .execute();
-            if(created == 1) {
+            if (created == 1) {
                 return id;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Cannot create account with id:" + id, e);
         }
-        return null;
-    }
 
-    private DSLContext database(Connection connection) {
-        return using(connection, MYSQL, new Settings().withStatementType(PREPARED_STATEMENT));
+        throw new DatabaseException("Cannot create account with id:" + id);
     }
 }

@@ -23,4 +23,12 @@ public class Account {
         this.id = id;
         this.pricingModel = pricingModel;
     }
+
+    public String id() {
+        return id;
+    }
+
+    public PricingModel pricingModel() {
+        return pricingModel;
+    }
 }

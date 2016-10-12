@@ -2,6 +2,7 @@ package support;
 
 import app.config.DatabaseConfig;
 import org.junit.Test;
+import support.database.DriverManagerDataSource;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;

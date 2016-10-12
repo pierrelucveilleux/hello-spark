@@ -1,4 +1,4 @@
-package support;
+package support.database;
 
 
 import app.config.DatabaseConfig;

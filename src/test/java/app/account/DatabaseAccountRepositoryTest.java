@@ -4,12 +4,11 @@ import app.config.DatabaseConfig;
 import app.support.Database;
 import org.junit.Before;
 import org.junit.Test;
-import support.DriverManagerDataSource;
+import support.database.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DatabaseAccountRepositoryTest {
@@ -34,6 +33,7 @@ public class DatabaseAccountRepositoryTest {
     public void canFindAccount() throws Exception {
         String id = accountRepository.create(Account.PricingModel.Free);
 
-        assertThat(accountRepository.find(id), not(nullValue()));
+        Account account = accountRepository.find(id);
+        assertThat(account.pricingModel(), is(Account.PricingModel.Free));
     }
 }

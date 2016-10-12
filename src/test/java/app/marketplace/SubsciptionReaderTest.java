@@ -1,4 +1,4 @@
-package app.market;
+package app.marketplace;
 
 import com.google.gson.Gson;
 import org.junit.Test;
