@@ -35,6 +35,7 @@ public class Server {
 //        before("/api/*", new RequiresAuthenticationFilter(config, "FacebookClient"));
 
         get("/login", new LoginUser());
+        get("/openid", new OpenIdLogin());
         post("/authenticate", new AuthenticatUser(new MemoryAuthenticationService()));
         get("/musicals", new ListMusicals());
 
