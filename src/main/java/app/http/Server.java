@@ -1,6 +1,8 @@
 package app.http;
 
 import app.HelloApp;
+import app.auth.MemoryAuthenticationService;
+import app.controller.AuthenticatUser;
 import app.controller.CancelSubscription;
 import app.controller.CreateSubscription;
 import app.controller.LoginUser;
@@ -8,9 +10,6 @@ import app.domain.Message;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static spark.Spark.*;
 
@@ -23,18 +22,22 @@ public class Server {
     public void start(int port) {
         port(port);
 
+        staticFiles.location("/webapp");
+
         redirect.get("/", "/login");
 
-        List<String> publicPaths = new ArrayList<>();
-        publicPaths.add("/");
-        publicPaths.add("/login");
-        publicPaths.add("/api/subscription/create");
-        publicPaths.add("/api/subscription/cancel");
+//        List<String> publicPaths = new ArrayList<>();
+//        publicPaths.add("/");
+//        publicPaths.add("/login");
+//        publicPaths.add("/api/subscription/create");
+//        publicPaths.add("/api/subscription/cancel");
 
 //        before("/api/*", new RequiresAuthenticationFilter(config, "FacebookClient"));
 
         get("/login", new LoginUser());
-//        post("/authenticate", new AuthenticatUser(authenticationService));
+        post("/authenticate", new AuthenticatUser(new MemoryAuthenticationService()));
+        get("/musicals", new ListMusicals());
+
 
         get("/subscription/create", new CreateSubscription(gson));
         get("/subscription/cancel", new CancelSubscription(gson));
