@@ -13,6 +13,8 @@ import spark.Response;
 import spark.Route;
 import support.OAuthRequest;
 
+import java.util.Optional;
+
 import static java.util.Arrays.asList;
 
 public class CreateSubscription implements Route {
@@ -30,21 +32,24 @@ public class CreateSubscription implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
 
+        response.type("application/json");
+
         logger.info("Create: " + request.uri() + ",  " + request.body());
         request.headers().forEach((h) -> logger.info("Header : " + h + " Value: " + request.headers(h)));
         request.queryParams().forEach((k) -> logger.info("Item : " + k + " Value: " + asList(request.queryParamsValues(k))));
 
         OAuthRequest oAuth = new OAuthRequest("job-138569", "xYTtH7x1Du0Y");
 
-        String body = oAuth.sign(request);
+        Optional<String> body = oAuth.sign(request);
+        if(body.isPresent()) {
+            SubsciptionReader subsciptionReader = new SubsciptionReader(gson);
+            SubscriptionEvent subscriptionEvent = subsciptionReader.read(body.get());
 
-        SubsciptionReader subsciptionReader = new SubsciptionReader(gson);
-        SubscriptionEvent subscriptionEvent = subsciptionReader.read(body);
-
-        String accountId = accountRepository.create(Account.PricingModel.Free);
-        logger.info("Created account: " + accountId +  ", Body: " + body);
-
-        response.type("application/json");
-        return gson.toJson(new ApiResult(accountId, true));
+            String accountId = accountRepository.create(Account.PricingModel.Free);
+            logger.info("Created account: " + accountId +  ", Body: " + body);
+            return gson.toJson(new ApiResult(accountId, true));
+        } else {
+            return gson.toJson(new ApiResult("ERROR", false));
+        }
     }
 }

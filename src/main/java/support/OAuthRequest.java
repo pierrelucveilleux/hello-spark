@@ -3,6 +3,9 @@ package support;
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.basic.DefaultOAuthConsumer;
+import oauth.signpost.exception.OAuthCommunicationException;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.signature.QueryStringSigningStrategy;
 import spark.Request;
 
@@ -11,6 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Optional;
+
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 
 public class OAuthRequest {
@@ -23,31 +30,35 @@ public class OAuthRequest {
         this.consumerKey = consumerKey;
     }
 
-    public String sign(Request request) throws Exception {
+    public Optional<String> sign(Request request) {
 
         OAuthConsumer consumer = new DefaultOAuthConsumer(consumerKey, consumerSecret);
         consumer.setSigningStrategy(new QueryStringSigningStrategy());
 
         String endpoint = request.queryParams("eventUrl") + "?" + collectOauthParams(request);
-        URL url = new URL(endpoint);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        consumer.sign(connection);
-        connection.connect();
-
-        if (connection.getResponseCode() >= 200 && connection.getResponseCode() < 400) {
-            return read(connection.getInputStream());
-        } else {
-            throw new Exception("Request to " + url + " failed with status " + connection.getResponseCode());
+        try {
+            URL url = new URL(endpoint);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            consumer.sign(connection);
+            connection.connect();
+            int responseCode = connection.getResponseCode();
+            connection.disconnect();
+            if (responseCode != 200) {
+                return of(read(connection.getInputStream()));
+            }
+        } catch (IOException | OAuthMessageSignerException | OAuthCommunicationException | OAuthExpectationFailedException e) {
+            e.printStackTrace();
         }
+        return empty();
     }
 
     private String collectOauthParams(Request request) {
         return OAuth.OAUTH_CONSUMER_KEY + "=" + request.queryParamsValues(OAuth.OAUTH_CONSUMER_KEY)[0] +
-            OAuth.OAUTH_NONCE + "=" + request.queryParamsValues(OAuth.OAUTH_NONCE)[0] +
-            OAuth.OAUTH_TIMESTAMP + "=" + request.queryParamsValues(OAuth.OAUTH_TIMESTAMP)[0] +
-            OAuth.OAUTH_VERSION + "=" + request.queryParamsValues(OAuth.OAUTH_VERSION)[0] +
-            OAuth.OAUTH_SIGNATURE + "=" + request.queryParamsValues(OAuth.OAUTH_SIGNATURE)[0] +
-            OAuth.OAUTH_SIGNATURE_METHOD + "=" + request.queryParamsValues(OAuth.OAUTH_SIGNATURE_METHOD)[0];
+                OAuth.OAUTH_NONCE + "=" + request.queryParamsValues(OAuth.OAUTH_NONCE)[0] +
+                OAuth.OAUTH_TIMESTAMP + "=" + request.queryParamsValues(OAuth.OAUTH_TIMESTAMP)[0] +
+                OAuth.OAUTH_VERSION + "=" + request.queryParamsValues(OAuth.OAUTH_VERSION)[0] +
+                OAuth.OAUTH_SIGNATURE + "=" + request.queryParamsValues(OAuth.OAUTH_SIGNATURE)[0] +
+                OAuth.OAUTH_SIGNATURE_METHOD + "=" + request.queryParamsValues(OAuth.OAUTH_SIGNATURE_METHOD)[0];
     }
 
     private String read(InputStream inputStream) throws IOException {
