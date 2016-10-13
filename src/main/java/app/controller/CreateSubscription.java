@@ -34,10 +34,9 @@ public class CreateSubscription implements Route {
         request.headers().forEach((h) -> logger.info("Header : " + h + " Value: " + request.headers(h)));
         request.queryParams().forEach((k) -> logger.info("Item : " + k + " Value: " + asList(request.queryParamsValues(k))));
 
-        String eventUrl = request.queryParams("eventUrl");
         OAuthRequest oAuth = new OAuthRequest("job-138569", "xYTtH7x1Du0Y");
 
-        String body = oAuth.sign(eventUrl);
+        String body = oAuth.sign(request);
 
         SubsciptionReader subsciptionReader = new SubsciptionReader(gson);
         SubscriptionEvent subscriptionEvent = subsciptionReader.read(body);
