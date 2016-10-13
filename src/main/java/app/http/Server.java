@@ -1,6 +1,7 @@
 package app.http;
 
 import app.HelloApp;
+import app.account.DatabaseAccountRepository;
 import app.auth.MemoryAuthenticationService;
 import app.controller.AuthenticatUser;
 import app.controller.CancelSubscription;
@@ -55,7 +56,7 @@ public class Server {
         get("/musicals", new ListMusicals());
 
 
-        get("/subscription/create", new CreateSubscription(datasource, consumerManager, gson));
+        get("/subscription/create", new CreateSubscription(new DatabaseAccountRepository(datasource), gson));
         get("/subscription/cancel", new CancelSubscription(datasource, gson));
         get("/hello/:name", (request, response) -> "Hello: " + request.params(":name"));
         get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);
