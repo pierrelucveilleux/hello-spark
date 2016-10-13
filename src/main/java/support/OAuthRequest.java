@@ -53,11 +53,11 @@ public class OAuthRequest {
     }
 
     private String collectOauthParams(Request request) {
-        return OAuth.OAUTH_CONSUMER_KEY + "=" + request.queryParamsValues(OAuth.OAUTH_CONSUMER_KEY)[0] +
-                OAuth.OAUTH_NONCE + "=" + request.queryParamsValues(OAuth.OAUTH_NONCE)[0] +
-                OAuth.OAUTH_TIMESTAMP + "=" + request.queryParamsValues(OAuth.OAUTH_TIMESTAMP)[0] +
-                OAuth.OAUTH_VERSION + "=" + request.queryParamsValues(OAuth.OAUTH_VERSION)[0] +
-                OAuth.OAUTH_SIGNATURE + "=" + request.queryParamsValues(OAuth.OAUTH_SIGNATURE)[0] +
+        return OAuth.OAUTH_CONSUMER_KEY + "=" + request.queryParamsValues(OAuth.OAUTH_CONSUMER_KEY)[0] + "&" +
+                OAuth.OAUTH_NONCE + "=" + request.queryParamsValues(OAuth.OAUTH_NONCE)[0] + "&" +
+                OAuth.OAUTH_TIMESTAMP + "=" + request.queryParamsValues(OAuth.OAUTH_TIMESTAMP)[0] + "&" +
+                OAuth.OAUTH_VERSION + "=" + request.queryParamsValues(OAuth.OAUTH_VERSION)[0] + "&" +
+                OAuth.OAUTH_SIGNATURE + "=" + request.queryParamsValues(OAuth.OAUTH_SIGNATURE)[0] + "&" +
                 OAuth.OAUTH_SIGNATURE_METHOD + "=" + request.queryParamsValues(OAuth.OAUTH_SIGNATURE_METHOD)[0];
     }
 
