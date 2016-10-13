@@ -1,9 +1,9 @@
 package app.user;
 
 import app.config.DatabaseConfig;
-import app.support.Database;
 import org.junit.Before;
 import org.junit.Test;
+import support.database.DatabaseMigrator;
 import support.database.DriverManagerDataSource;
 
 import javax.sql.DataSource;
@@ -18,9 +18,9 @@ public class DatabaseUserRepositoryTest {
 
     @Before
     public void setUp() throws Exception {
-        DataSource dataSource = new DriverManagerDataSource(new DatabaseConfig("jdbc:h2:mem:broadway;DB_CLOSE_DELAY=-1", "admin", "admin"));
-        Database database = new Database(dataSource);
-        database.migrate();
+        DataSource dataSource = new DriverManagerDataSource(new DatabaseConfig("jdbc:h2:mem:musicals;DB_CLOSE_DELAY=-1", "admin", "admin"));
+        DatabaseMigrator databaseMigrator = new DatabaseMigrator(dataSource);
+        databaseMigrator.migrate();
 
         userRepository = new DatabaseUserRepository(dataSource);
     }

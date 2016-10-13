@@ -1,4 +1,4 @@
-package app.support;
+package support.database;
 
 import org.flywaydb.core.Flyway;
 
@@ -6,11 +6,11 @@ import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Database {
+public class DatabaseMigrator {
 
     private Flyway flyway;
 
-    public Database(DataSource dataSource, String... extraLocations) {
+    public DatabaseMigrator(DataSource dataSource, String... extraLocations) {
         flyway = new Flyway();
         flyway.setDataSource(dataSource);
 

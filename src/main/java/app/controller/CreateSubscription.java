@@ -11,6 +11,8 @@ import spark.Response;
 import spark.Route;
 import support.OAuthGet;
 
+import javax.sql.DataSource;
+
 import static java.util.Arrays.asList;
 
 public class CreateSubscription implements Route {
@@ -18,9 +20,11 @@ public class CreateSubscription implements Route {
     private Logger logger = LoggerFactory.getLogger(CreateSubscription.class);
 
     private final SubsciptionReader subsciptionReader;
+    private final DataSource datasource;
     private final Gson gson;
 
-    public CreateSubscription(Gson gson) {
+    public CreateSubscription(DataSource datasource, Gson gson) {
+        this.datasource = datasource;
         this.gson = gson;
         this.subsciptionReader = new SubsciptionReader(gson);
     }

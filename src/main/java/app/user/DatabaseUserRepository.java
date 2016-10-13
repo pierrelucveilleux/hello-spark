@@ -26,7 +26,7 @@ public class DatabaseUserRepository implements UserRepository {
         try {
             DSLContext database = database(dataSource.getConnection());
             int created = database
-                    .insertInto(table("user"), field("id"), field("name"), field("email"))
+                    .insertInto(table("users"), field("id"), field("name"), field("email"))
                     .values(id, user.name(), user.email())
                     .execute();
             if (created == 1) {
@@ -42,7 +42,7 @@ public class DatabaseUserRepository implements UserRepository {
     public User findByEmail(String email) {
         try {
             Record userRead = database(dataSource.getConnection())
-                    .select(field("id"), field("name"), field("email")).from(table("user"))
+                    .select(field("id"), field("name"), field("email")).from(table("users"))
                     .where(field("email").eq(email))
                     .fetchOne();
             return new User((String) userRead.getValue("id"), (String) userRead.getValue("name"), (String) userRead.getValue("email"));

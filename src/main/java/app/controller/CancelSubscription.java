@@ -8,15 +8,19 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import javax.sql.DataSource;
+
 import static java.util.Arrays.asList;
 
 public class CancelSubscription implements Route {
 
     private Logger logger = LoggerFactory.getLogger(CancelSubscription.class);
 
+    private final DataSource datasource;
     private final Gson gson;
 
-    public CancelSubscription(Gson gson) {
+    public CancelSubscription(DataSource datasource, Gson gson) {
+        this.datasource = datasource;
         this.gson = gson;
     }
 

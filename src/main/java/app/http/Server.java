@@ -11,13 +11,20 @@ import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
+
 import static spark.Spark.*;
 
 public class Server {
 
     private static Logger logger = LoggerFactory.getLogger(HelloApp.class);
+    private final DataSource datasource;
 
     private Gson gson = new Gson();
+
+    public Server(DataSource datasource) {
+        this.datasource = datasource;
+    }
 
     public void start(int port) {
         port(port);
@@ -40,8 +47,8 @@ public class Server {
         get("/musicals", new ListMusicals());
 
 
-        get("/subscription/create", new CreateSubscription(gson));
-        get("/subscription/cancel", new CancelSubscription(gson));
+        get("/subscription/create", new CreateSubscription(datasource, gson));
+        get("/subscription/cancel", new CancelSubscription(datasource, gson));
         get("/hello/:name", (request, response) -> "Hello: " + request.params(":name"));
         get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);
         get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);
