@@ -2,7 +2,7 @@ package app.account;
 
 public class Account {
 
-    enum PricingModel {
+    public enum PricingModel {
         Free,
         Premium;
 

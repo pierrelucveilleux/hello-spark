@@ -8,6 +8,9 @@ import app.controller.CreateSubscription;
 import app.controller.LoginUser;
 import app.domain.Message;
 import com.google.gson.Gson;
+import org.openid4java.consumer.ConsumerManager;
+import org.openid4java.consumer.InMemoryConsumerAssociationStore;
+import org.openid4java.consumer.InMemoryNonceVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +32,11 @@ public class Server {
     public void start(int port) {
         port(port);
 
+        ConsumerManager consumerManager = new ConsumerManager();
+        consumerManager.setAssociations(new InMemoryConsumerAssociationStore());
+        consumerManager.setNonceVerifier(new InMemoryNonceVerifier(5000));
+
+
         staticFiles.location("/webapp");
 
         redirect.get("/", "/login");
@@ -47,7 +55,7 @@ public class Server {
         get("/musicals", new ListMusicals());
 
 
-        get("/subscription/create", new CreateSubscription(datasource, gson));
+        get("/subscription/create", new CreateSubscription(datasource, consumerManager, gson));
         get("/subscription/cancel", new CancelSubscription(datasource, gson));
         get("/hello/:name", (request, response) -> "Hello: " + request.params(":name"));
         get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);
