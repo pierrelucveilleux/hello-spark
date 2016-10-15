@@ -38,7 +38,7 @@ public class CreateSubscription implements Route {
         request.headers().forEach((h) -> logger.info("Header : " + h + " Value: " + request.headers(h)));
         request.queryParams().forEach((k) -> logger.info("Item : " + k + " Value: " + asList(request.queryParamsValues(k))));
 
-        OAuthRequest oAuth = new OAuthRequest("job-138569", "sxYTtH7x1Du0Y");
+        OAuthRequest oAuth = new OAuthRequest("job-138569", "BOVfHqHi5jsQ");
 
         Optional<String> body = oAuth.sign(request);
         if(body.isPresent()) {

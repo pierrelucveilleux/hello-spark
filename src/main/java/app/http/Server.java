@@ -3,10 +3,7 @@ package app.http;
 import app.HelloApp;
 import app.account.DatabaseAccountRepository;
 import app.auth.MemoryAuthenticationService;
-import app.controller.AuthenticatUser;
-import app.controller.CancelSubscription;
-import app.controller.CreateSubscription;
-import app.controller.LoginUser;
+import app.controller.*;
 import app.domain.Message;
 import com.google.gson.Gson;
 import org.openid4java.consumer.ConsumerManager;
@@ -57,6 +54,7 @@ public class Server {
 
 
         get("/subscription/create", new CreateSubscription(new DatabaseAccountRepository(datasource), gson));
+        get("/subscription/change", new ChangeSubscription(datasource, gson));
         get("/subscription/cancel", new CancelSubscription(datasource, gson));
         get("/hello/:name", (request, response) -> "Hello: " + request.params(":name"));
         get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);
