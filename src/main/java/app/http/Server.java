@@ -6,11 +6,9 @@ import app.auth.MemoryAuthenticationService;
 import app.controller.*;
 import app.domain.Message;
 import com.google.gson.Gson;
-import org.openid4java.consumer.ConsumerManager;
-import org.openid4java.consumer.InMemoryConsumerAssociationStore;
-import org.openid4java.consumer.InMemoryNonceVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import support.OAuthRequest;
 
 import javax.sql.DataSource;
 
@@ -30,11 +28,8 @@ public class Server {
     public void start(int port) {
         port(port);
 
-        ConsumerManager consumerManager = new ConsumerManager();
-        consumerManager.setAssociations(new InMemoryConsumerAssociationStore());
-        consumerManager.setNonceVerifier(new InMemoryNonceVerifier(5000));
 
-
+        OAuthRequest oAuthRequest = new OAuthRequest("job-138569", "xYTtH7x1Du0Y", false);
         staticFiles.location("/webapp");
 
         redirect.get("/", "/login");
@@ -53,7 +48,7 @@ public class Server {
         get("/musicals", new ListMusicals());
 
 
-        get("/subscription/create", new CreateSubscription(new DatabaseAccountRepository(datasource), gson));
+        get("/subscription/create", new CreateSubscription(new DatabaseAccountRepository(datasource), oAuthRequest, gson));
         get("/subscription/change", new ChangeSubscription(datasource, gson));
         get("/subscription/cancel", new CancelSubscription(datasource, gson));
         get("/hello/:name", (request, response) -> "Hello: " + request.params(":name"));

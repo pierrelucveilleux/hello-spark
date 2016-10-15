@@ -1,4 +1,4 @@
-package app.marketplace;
+package app.marketplace.subscription;
 
 import com.google.gson.Gson;
 

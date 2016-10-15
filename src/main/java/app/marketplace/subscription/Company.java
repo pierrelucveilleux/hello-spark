@@ -1,4 +1,4 @@
-package app.marketplace;
+package app.marketplace.subscription;
 
 public class Company {
     public String name;

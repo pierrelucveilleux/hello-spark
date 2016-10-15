@@ -7,7 +7,6 @@ import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.Request;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,10 +35,9 @@ public class OAuthRequest {
         this.signFetchEnabled = signFetchEnabled;
     }
 
-    public Optional<String> sign(Request request) {
+    public Optional<String> read(String endpoint) {
 
         OAuthConsumer consumer = new DefaultOAuthConsumer(consumerKey, consumerSecret);
-        String endpoint = request.queryParams("eventUrl");
         try {
             URL url = new URL(endpoint);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

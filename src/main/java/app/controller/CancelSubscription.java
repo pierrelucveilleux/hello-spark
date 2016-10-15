@@ -1,6 +1,5 @@
 package app.controller;
 
-import app.domain.ApiResult;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +9,7 @@ import spark.Route;
 
 import javax.sql.DataSource;
 
+import static app.domain.ApiResult.succes;
 import static java.util.Arrays.asList;
 
 public class CancelSubscription implements Route {
@@ -31,6 +31,6 @@ public class CancelSubscription implements Route {
         request.queryParams().forEach((k) -> logger.info("Item : " + k + " Value: " + asList(request.queryParamsValues(k))));
 
         response.type("application/json");
-        return gson.toJson(new ApiResult("account-123", true));
+        return gson.toJson(succes("account-123"));
     }
 }

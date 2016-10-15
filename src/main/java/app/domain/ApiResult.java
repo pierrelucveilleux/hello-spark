@@ -2,11 +2,23 @@ package app.domain;
 
 public class ApiResult {
 
-    private final String accountIdentifier;
-    private final boolean success;
+    private boolean success;
+    private String accountIdentifier;
+    private String errorCode;
+    private String errorMessage;
 
-    public ApiResult(String accountIdentifier, boolean success) {
-        this.accountIdentifier = accountIdentifier;
+    private ApiResult(boolean success, String accountIdentifier, String errorCode, String errorMessage) {
         this.success = success;
+        this.accountIdentifier = accountIdentifier;
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+    }
+
+    public static ApiResult succes(String accountIdentifier) {
+        return new ApiResult(true, accountIdentifier, null, null);
+    }
+
+    public static ApiResult error(String errorCode, String errorMessage) {
+        return new ApiResult(false, null, errorCode, errorMessage);
     }
 }

@@ -12,13 +12,9 @@
     "email": "test-email+creator@appdirect.com",
     "firstName": "DummyCreatorFirst",
     "lastName": "DummyCreatorLast",
-    "language": "fr",
-    "locale": null,
-    "address": null,
-    "attributes": null
+    "language": "fr"
   },
   "payload": {
-    "user": null,
     "company": {
       "uuid": "d15bb36e-5fb5-11e0-8c3c-00262d2cda03",
       "externalId": null,
@@ -28,12 +24,8 @@
       "website": "http://www.example.com",
       "country": "CA"
     },
-    "account": null,
-    "addonInstance": null,
-    "addonBinding": null,
     "order": {
-      "editionCode": "BASIC",
-      "addonOfferingCode": null,
+      "editionCode": "FREE",
       "pricingDuration": "MONTHLY",
       "items": [
         {
@@ -46,11 +38,9 @@
         }
       ]
     },
-    "notice": null,
     "configuration": {
       "domain": "mydomain"
     }
   },
-  "returnUrl": "https://www.appdirect.com/finishprocure?token=dummyOrder",
-  "links": []
+  "returnUrl": "https://www.appdirect.com/finishprocure?token=dummyOrder"
 }
