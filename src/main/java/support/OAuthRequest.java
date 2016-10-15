@@ -31,6 +31,7 @@ public class OAuthRequest {
 
     public Optional<String> sign(Request request) {
 
+        System.setProperty("debug", "true");
         OAuthConsumer consumer = new DefaultOAuthConsumer(consumerKey, consumerSecret);
 //        consumer.setSigningStrategy(new QueryStringSigningStrategy());
 
