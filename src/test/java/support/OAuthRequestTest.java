@@ -20,7 +20,7 @@ public class OAuthRequestTest {
 
     @Test
     public void canSign() throws Exception {
-        OAuthRequest oAuthRequest = new OAuthRequest("secret", "key");
+        OAuthRequest oAuthRequest = new OAuthRequest("secret", "key", false);
         oAuthRequest.sign(request);
     }
 }
