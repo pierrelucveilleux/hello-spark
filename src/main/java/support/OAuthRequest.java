@@ -34,16 +34,19 @@ public class OAuthRequest {
         OAuthConsumer consumer = new DefaultOAuthConsumer(consumerKey, consumerSecret);
 //        consumer.setSigningStrategy(new QueryStringSigningStrategy());
 
-        String endpoint = request.queryParams("eventUrl") + "?" + collectOauthParams(request);
+        String endpoint = request.queryParams("eventUrl");// + "?" + collectOauthParams(request);
         try {
             URL url = new URL(endpoint);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             consumer.sign(connection);
+            connection.addRequestProperty("Accept", "application/json");
             connection.connect();
+
             int responseCode = connection.getResponseCode();
-            connection.disconnect();
             if (responseCode != 200) {
-                return of(read(connection.getInputStream()));
+                String read = read(connection.getInputStream());
+                connection.disconnect();
+                return of(read);
             }
         } catch (IOException | OAuthMessageSignerException | OAuthCommunicationException | OAuthExpectationFailedException e) {
             e.printStackTrace();
