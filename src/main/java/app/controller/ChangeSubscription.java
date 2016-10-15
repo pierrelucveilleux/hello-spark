@@ -1,13 +1,13 @@
 package app.controller;
 
+import app.account.DatabaseAccountRepository;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-
-import javax.sql.DataSource;
+import support.OAuthRequest;
 
 import static app.domain.ApiResult.succes;
 import static java.util.Arrays.asList;
@@ -16,11 +16,13 @@ public class ChangeSubscription implements Route {
 
     private Logger logger = LoggerFactory.getLogger(CancelSubscription.class);
 
-    private final DataSource datasource;
+    private final DatabaseAccountRepository accountRepository;
+    private final OAuthRequest oAuthRequest;
     private final Gson gson;
 
-    public ChangeSubscription(DataSource datasource, Gson gson) {
-        this.datasource = datasource;
+    public ChangeSubscription(DatabaseAccountRepository accountRepository, OAuthRequest oAuthRequest, Gson gson) {
+        this.accountRepository = accountRepository;
+        this.oAuthRequest = oAuthRequest;
         this.gson = gson;
     }
 

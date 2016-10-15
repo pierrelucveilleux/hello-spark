@@ -40,6 +40,7 @@ public class SubsciptionReaderTest {
 
         assertThat(event.payload.order, not(nullValue()));
         assertThat(event.payload.order.editionCode, equalTo("FREE"));
+        assertThat(event.payload.order.editionCode, equalTo("FREE"));
         assertThat(event.payload.order.pricingModel, equalTo("MONTHLY"));
     }
 

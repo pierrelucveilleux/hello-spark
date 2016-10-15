@@ -4,5 +4,9 @@ public interface AccountRepository {
 
     Account find(String id);
 
-    String create(Account.PricingModel pricingModel);
+    String create(PricingModel pricingModel);
+
+    void remove(String id);
+
+    void update(Account account);
 }

@@ -7,7 +7,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import static app.account.Account.PricingModel.fromValue;
+import static app.account.PricingModel.fromValue;
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
 import static support.database.DatabaseContext.database;
@@ -28,14 +28,17 @@ public class DatabaseAccountRepository implements AccountRepository {
                     .select(field("id"), field("pricing")).from(table("account"))
                     .where(field("id").eq(id))
                     .fetchOne();
-            return new Account((String) accountRead.getValue("id"), fromValue((String) accountRead.getValue("pricing")));
+            if(accountRead != null) {
+                return new Account((String) accountRead.getValue("id"), fromValue((String) accountRead.getValue("pricing")));
+            }
+            return null;
         } catch (SQLException e) {
             throw new DatabaseException("Cannot find account with id:" + id, e);
         }
     }
 
     @Override
-    public String create(Account.PricingModel pricingModel) {
+    public String create(PricingModel pricingModel) {
         String id = UUID.randomUUID().toString();
         try {
             int created = database(dataSource.getConnection())
@@ -52,5 +55,29 @@ public class DatabaseAccountRepository implements AccountRepository {
         }
 
         throw new DatabaseException("Cannot create account with id:" + id);
+    }
+
+    @Override
+    public void remove(String id) {
+        try {
+            database(dataSource.getConnection())
+                    .delete(table("account")).where(field("id").eq(id))
+                    .execute();
+        } catch (SQLException e) {
+            throw new DatabaseException("Cannot remove account with id:" + id, e);
+        }
+    }
+
+    @Override
+    public void update(Account account) {
+        try {
+            database(dataSource.getConnection())
+                    .update(table("account"))
+                    .set(field("pricing"), account.pricingModel().toValue())
+                    .where(field("id").eq(account.id()))
+                    .execute();
+        } catch (SQLException e) {
+            throw new DatabaseException("Cannot remove account with id:" + account.id(), e);
+        }
     }
 }

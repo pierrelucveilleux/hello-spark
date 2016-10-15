@@ -39,7 +39,7 @@ public class Server {
 //        publicPaths.add("/api/subscription/create");
 //        publicPaths.add("/api/subscription/cancel");
 
-//        before("/api/*", new RequiresAuthenticationFilter(config, "FacebookClient"));
+//        before("/subscription/*", new RequiresAuthenticationFilter(config, "FacebookClient"));
 
         get("/login", new LoginUser());
         get("/openid", new OpenIdLogin());
@@ -48,8 +48,8 @@ public class Server {
 
 
         get("/subscription/create", new CreateSubscription(new DatabaseAccountRepository(datasource), oAuthRequest, gson));
-        get("/subscription/change", new ChangeSubscription(datasource, gson));
-        get("/subscription/cancel", new CancelSubscription(datasource, gson));
+        get("/subscription/change", new ChangeSubscription(new DatabaseAccountRepository(datasource), oAuthRequest, gson));
+        get("/subscription/cancel", new CancelSubscription(new DatabaseAccountRepository(datasource), oAuthRequest, gson));
         get("/hello/:name", (request, response) -> "Hello: " + request.params(":name"));
         get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);
         get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);

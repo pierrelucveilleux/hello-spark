@@ -1,36 +1,55 @@
 package app.controller;
 
+import app.account.AccountRepository;
+import app.marketplace.subscription.SubsciptionReader;
+import app.marketplace.subscription.SubscriptionEvent;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+import support.LogRequest;
+import support.OAuthRequest;
 
-import javax.sql.DataSource;
+import java.util.Optional;
 
+import static app.domain.ApiResult.error;
 import static app.domain.ApiResult.succes;
-import static java.util.Arrays.asList;
 
 public class CancelSubscription implements Route {
 
     private Logger logger = LoggerFactory.getLogger(CancelSubscription.class);
 
-    private final DataSource datasource;
+    private final AccountRepository accountRepository;
+    private final OAuthRequest oAuthRequest;
     private final Gson gson;
 
-    public CancelSubscription(DataSource datasource, Gson gson) {
-        this.datasource = datasource;
+    public CancelSubscription(AccountRepository accountRepository, OAuthRequest oAuthRequest, Gson gson) {
+        this.accountRepository = accountRepository;
+        this.oAuthRequest = oAuthRequest;
         this.gson = gson;
     }
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        logger.info("Cancel + " + request);
-
-        request.queryParams().forEach((k) -> logger.info("Item : " + k + " Value: " + asList(request.queryParamsValues(k))));
+        LogRequest.logRequestInfo(request, logger);
 
         response.type("application/json");
-        return gson.toJson(succes("account-123"));
+
+        Optional<String> body = oAuthRequest.read(request.queryParams("eventUrl"));
+        if(body.isPresent()) {
+            SubsciptionReader subsciptionReader = new SubsciptionReader(gson);
+            logger.info("Read event", body.get());
+            SubscriptionEvent subscriptionEvent = subsciptionReader.read(body.get());
+
+            String accountId = subscriptionEvent.payload.order.accountIdentifier;
+            accountRepository.remove(accountId);
+
+            logger.info("Removed account: " + accountId +  ", Body: " + body);
+            return gson.toJson(succes(accountId));
+        } else {
+            return gson.toJson(error("INTERNAL_ERROR", "Cannot read subscription"));
+        }
     }
 }

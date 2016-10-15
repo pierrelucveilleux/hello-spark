@@ -1,7 +1,6 @@
 package app.controller;
 
 import app.account.AccountRepository;
-import app.account.PricingModel;
 import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,13 +14,12 @@ import static java.util.Optional.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static support.ContentOf.resource;
 
-public class CreateSubscriptionTest {
+public class CancelSubscriptionTest {
 
-    CreateSubscription subscribe;
+    CancelSubscription subscribe;
     AccountRepository accountRepository;
     OAuthRequest oAuthRequest;
     Request request;
@@ -34,8 +32,9 @@ public class CreateSubscriptionTest {
 
         oAuthRequest = mock(OAuthRequest.class);
         accountRepository = mock(AccountRepository.class);
-        subscribe = new CreateSubscription(accountRepository, oAuthRequest, new Gson());
+        subscribe = new CancelSubscription(accountRepository, oAuthRequest, new Gson());
     }
+
 
     @Test
     public void isSignedAndReadFromEventUrlParam() throws Exception {
@@ -58,24 +57,13 @@ public class CreateSubscriptionTest {
     }
 
     @Test
-    public void createSubscriptionInRepository() throws Exception {
+    public void removeSubscriptionInRepository() throws Exception {
         when(request.queryParams("eventUrl")).thenReturn("http://appdirect.com/event/1");
         when(oAuthRequest.read(anyString())).thenReturn(of(resource("subscription/create.json")));
 
         subscribe.handle(request, response);
 
-        verify(accountRepository).create(PricingModel.Free);
+        verify(accountRepository).remove("12345");
     }
 
-    @Test
-    public void returnsAccountIdentifierOnSuccess() throws Exception {
-        when(request.queryParams("eventUrl")).thenReturn("http://appdirect.com/event/1");
-        when(oAuthRequest.read(anyString())).thenReturn(of(resource("subscription/create.json")));
-        when(accountRepository.create(eq(PricingModel.Free))).thenReturn("12345");
-
-        String result = (String)subscribe.handle(request, response);
-
-        assertThat(result, hasJsonPath("success", equalTo(true)));
-        assertThat(result, hasJsonPath("accountIdentifier", equalTo("12345")));
-    }
 }

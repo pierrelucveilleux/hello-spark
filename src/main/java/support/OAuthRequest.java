@@ -49,7 +49,7 @@ public class OAuthRequest {
 
             int responseCode = connection.getResponseCode();
             logger.info("sign request is " + responseCode);
-            if (responseCode == 200) {
+            if (responseCode ==200) {
                 String read = read(connection.getInputStream());
                 logger.info("event:" + read);
                 return of(read);

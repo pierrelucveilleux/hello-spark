@@ -26,14 +26,36 @@ public class DatabaseAccountRepositoryTest {
 
     @Test
     public void canCreateAccount() throws Exception {
-        assertThat(accountRepository.create(Account.PricingModel.Free), not(nullValue()));
+        assertThat(accountRepository.create(PricingModel.Free), not(nullValue()));
+    }
+
+    @Test
+    public void canRemoveAccount() throws Exception {
+        String created = accountRepository.create(PricingModel.Free);
+
+        Account account = accountRepository.find(created);
+        accountRepository.remove(account.id());
+
+        assertThat(accountRepository.find(account.id()), nullValue());
+    }
+
+    @Test
+    public void canUpdateAccount() throws Exception {
+        String created = accountRepository.create(PricingModel.Free);
+
+        Account account = accountRepository.find(created);
+        account.pricingModel(PricingModel.Premium);
+        accountRepository.update(account);
+
+        Account updated = accountRepository.find(account.id());
+        assertThat(updated.pricingModel(), equalTo(PricingModel.Premium));
     }
 
     @Test
     public void canFindAccount() throws Exception {
-        String id = accountRepository.create(Account.PricingModel.Free);
+        String id = accountRepository.create(PricingModel.Free);
 
         Account account = accountRepository.find(id);
-        assertThat(account.pricingModel(), is(Account.PricingModel.Free));
+        assertThat(account.pricingModel(), is(PricingModel.Free));
     }
 }
