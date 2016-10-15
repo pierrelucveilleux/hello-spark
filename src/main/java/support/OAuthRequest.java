@@ -3,9 +3,6 @@ package support;
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.basic.DefaultOAuthConsumer;
-import oauth.signpost.exception.OAuthCommunicationException;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
 import spark.Request;
 
 import java.io.ByteArrayOutputStream;
@@ -39,7 +36,7 @@ public class OAuthRequest {
         try {
             URL url = new URL(endpoint);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            consumer.sign(connection);
+//            consumer.sign(connection);
             connection.addRequestProperty("Accept", "application/json");
             connection.connect();
 
@@ -49,7 +46,8 @@ public class OAuthRequest {
                 connection.disconnect();
                 return of(read);
             }
-        } catch (IOException | OAuthMessageSignerException | OAuthCommunicationException | OAuthExpectationFailedException e) {
+        } catch (IOException e) {
+//        } catch (IOException | OAuthMessageSignerException | OAuthCommunicationException | OAuthExpectationFailedException e) {
             e.printStackTrace();
         }
         return empty();
