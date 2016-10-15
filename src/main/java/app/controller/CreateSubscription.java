@@ -50,6 +50,7 @@ public class CreateSubscription implements Route {
 //        Optional<String> body = oAuth.sign(request);
         if(body.isPresent()) {
             SubsciptionReader subsciptionReader = new SubsciptionReader(gson);
+            logger.info("Read event", body.get());
             SubscriptionEvent subscriptionEvent = subsciptionReader.read(body.get());
 
             String accountId = accountRepository.create(Account.PricingModel.Free);
