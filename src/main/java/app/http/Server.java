@@ -28,8 +28,7 @@ public class Server {
     public void start(int port) {
         port(port);
 
-
-        OAuthRequest oAuthRequest = new OAuthRequest("job-138569", "xYTtH7x1Du0Y", false);
+        OAuthRequest oAuthRequest = new OAuthRequest("job-138569", "xYTtH7x1Du0Y", true);
         staticFiles.location("/webapp");
 
         redirect.get("/", "/login");

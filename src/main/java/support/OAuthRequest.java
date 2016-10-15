@@ -48,13 +48,14 @@ public class OAuthRequest {
             connection.connect();
 
             int responseCode = connection.getResponseCode();
+            logger.info("sign request is " + responseCode);
             if (responseCode == 200) {
                 String read = read(connection.getInputStream());
-                connection.disconnect();
+                logger.info("event:" + read);
                 return of(read);
             }
         } catch (IOException | OAuthMessageSignerException | OAuthCommunicationException | OAuthExpectationFailedException e) {
-            logger.error("", e);
+            logger.error("Connection error", e);
         }
         return empty();
     }
