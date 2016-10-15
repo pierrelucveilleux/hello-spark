@@ -6,7 +6,6 @@ import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.signature.QueryStringSigningStrategy;
 import spark.Request;
 
 import java.io.ByteArrayOutputStream;
@@ -33,7 +32,7 @@ public class OAuthRequest {
     public Optional<String> sign(Request request) {
 
         OAuthConsumer consumer = new DefaultOAuthConsumer(consumerKey, consumerSecret);
-        consumer.setSigningStrategy(new QueryStringSigningStrategy());
+//        consumer.setSigningStrategy(new QueryStringSigningStrategy());
 
         String endpoint = request.queryParams("eventUrl") + "?" + collectOauthParams(request);
         try {
