@@ -49,10 +49,10 @@ public class Server {
         post("/callback", callback);
 
         SecurityFilter userMustBeAuthentified = new SecurityFilter(config, "AppDirectOpenIdClient", "", "excludedPath");
-        get("/openid", new OpenIdLogin());
+//        get("/openid", new OpenIdLogin());
 //        post("/authenticate", new AuthenticatUser(new MemoryAuthenticationService()));
+//        before("/musicals", userMustBeAuthentified);
 
-        before("/musicals", userMustBeAuthentified);
         get("/musicals", new ListMusicals());
         redirect.get("/", "/musicals");
 
