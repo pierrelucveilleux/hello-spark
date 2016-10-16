@@ -1,0 +1,54 @@
+{
+  "type": "SUBSCRIPTION_CANCEL",
+  "marketplace": {
+    "partner": "APPDIRECT",
+    "baseUrl": "https://marketplace.appdirect.com"
+  },
+  "applicationUuid": null,
+  "flag": "DEVELOPMENT",
+  "creator": {
+    "uuid": "29da8333-e20a-4200-9335-78a884cb468a",
+    "openId": "https://marketplace.appdirect.com/openid/id/29da8333-e20a-4200-9335-78a884cb468a",
+    "email": "pierrelucveilleux@gmail.com",
+    "firstName": "Pierre-Luc",
+    "lastName": "Veilleux",
+    "language": "en",
+    "locale": "en-US",
+    "address": {
+      "salutation": null,
+      "firstName": "Pierre-Luc",
+      "lastName": "Veilleux",
+      "fullName": "Pierre-Luc Veilleux",
+      "companyName": null,
+      "phone": null,
+      "phoneExtension": null,
+      "fax": null,
+      "faxExtension": null,
+      "street1": null,
+      "street2": null,
+      "city": null,
+      "state": null,
+      "zip": null,
+      "country": null,
+      "pobox": null,
+      "pozip": null
+    },
+    "attributes": null
+  },
+  "payload": {
+    "user": null,
+    "company": null,
+    "account": {
+      "accountIdentifier": "7aa211cc-f0d4-457c-b53b-0d3f13d5a24b",
+      "status": "ACTIVE",
+      "parentAccountIdentifier": null
+    },
+    "addonInstance": null,
+    "addonBinding": null,
+    "order": null,
+    "notice": null,
+    "configuration": {}
+  },
+  "returnUrl": null,
+  "links": []
+}

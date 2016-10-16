@@ -39,11 +39,10 @@ public class CancelSubscription implements Route {
 
         Optional<String> body = oAuthRequest.read(request.queryParams("eventUrl"));
         if(body.isPresent()) {
-            SubsciptionReader subsciptionReader = new SubsciptionReader(gson);
             logger.info("Read event", body.get());
-            SubscriptionEvent subscriptionEvent = subsciptionReader.read(body.get());
+            SubscriptionEvent subscriptionEvent = new SubsciptionReader(gson).read(body.get());
 
-            String accountId = subscriptionEvent.payload.order.accountIdentifier;
+            String accountId = subscriptionEvent.payload.account.accountIdentifier;
             accountRepository.remove(accountId);
 
             logger.info("Removed account: " + accountId +  ", Body: " + body);

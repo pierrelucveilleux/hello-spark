@@ -16,8 +16,8 @@ public class SubsciptionReaderTest {
     SubsciptionReader reader = new SubsciptionReader(new Gson());
 
     @Test
-    public void canParseJson() throws Exception {
-        SubscriptionEvent event = reader.read(someResponse());
+    public void canParseCreateSubscription() throws Exception {
+        SubscriptionEvent event = reader.read(someResponse("subscription/create.json"));
 
         assertThat(event, not(nullValue()));
         assertThat(event.type, equalTo("SUBSCRIPTION_ORDER"));
@@ -44,7 +44,34 @@ public class SubsciptionReaderTest {
         assertThat(event.payload.order.pricingModel, equalTo("MONTHLY"));
     }
 
-    private String someResponse() {
-        return ContentOf.resource("subscription/create.json");
+    @Test
+    public void canParseCancelSubscription() throws Exception {
+        SubscriptionEvent event = reader.read(someResponse("subscription/cancel.json"));
+
+        assertThat(event, not(nullValue()));
+        assertThat(event.type, equalTo("SUBSCRIPTION_CANCEL"));
+
+        assertThat(event.creator, not(nullValue()));
+        assertThat(event.creator.uuid, equalTo("29da8333-e20a-4200-9335-78a884cb468a"));
+        assertThat(event.creator.openId, equalTo("https://marketplace.appdirect.com/openid/id/29da8333-e20a-4200-9335-78a884cb468a"));
+        assertThat(event.creator.email, equalTo("pierrelucveilleux@gmail.com"));
+        assertThat(event.creator.firstName, equalTo("Pierre-Luc"));
+        assertThat(event.creator.lastName, equalTo("Veilleux"));
+
+        assertThat(event.marketplace, not(nullValue()));
+        assertThat(event.marketplace.partner, equalTo("APPDIRECT"));
+        assertThat(event.marketplace.baseUrl, equalTo("https://marketplace.appdirect.com"));
+
+        assertThat(event.payload, not(nullValue()));
+        assertThat(event.payload.company, nullValue());
+
+        assertThat(event.payload.order, nullValue());
+
+        assertThat(event.payload.account, not(nullValue()));
+        assertThat(event.payload.account.accountIdentifier, equalTo("7aa211cc-f0d4-457c-b53b-0d3f13d5a24b"));
+    }
+
+    private String someResponse(String name) {
+        return ContentOf.resource(name);
     }
 }
