@@ -50,4 +50,17 @@ public class DatabaseUserRepository implements UserRepository {
             throw new DatabaseException("Cannot find user with email:" + email, e);
         }
     }
+
+    @Override
+    public User findByUuid(String uuid) {
+        try {
+            Record userRead = database(dataSource.getConnection())
+                    .select(field("id"), field("openid"), field("name"), field("lastname"), field("email")).from(table("users"))
+                    .where(field("id").eq(uuid))
+                    .fetchOne();
+            return new User((String) userRead.getValue("id"), (String) userRead.getValue("openid"), (String) userRead.getValue("name"), (String) userRead.getValue("lastname"), (String) userRead.getValue("email"));
+        } catch (SQLException e) {
+            throw new DatabaseException("Cannot find user with uuid:" + uuid, e);
+        }
+    }
 }

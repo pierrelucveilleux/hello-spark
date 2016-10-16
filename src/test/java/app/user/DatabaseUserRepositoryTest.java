@@ -45,6 +45,16 @@ public class DatabaseUserRepositoryTest {
         assertThat(user.email(), equalTo("an-email@gmail.com"));
     }
 
+    @Test
+    public void canFindUserByUuid() throws Exception {
+        String uuid = userRepository.create(someUser());
+
+        User user = userRepository.findByUuid(uuid);
+
+        assertThat(user.uuid(), equalTo(uuid));
+        assertThat(user.openid(), equalTo("82fdb185-10e7-4780-a5e6-69a3e74c9eec"));
+    }
+
     private User someUser() {
         return new User("uuid", "82fdb185-10e7-4780-a5e6-69a3e74c9eec", "first", "last", "an-email@gmail.com");
     }

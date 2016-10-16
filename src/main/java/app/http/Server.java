@@ -60,7 +60,7 @@ public class Server {
         get("/subscription/change", new ChangeSubscription(accountRepository, signRequest, gson));
         get("/subscription/cancel", new CancelSubscription(accountRepository, userAssignmentRepository, signRequest, gson));
 
-        get("/user/assignment", new AssignUser(userAssignmentRepository, signRequest, gson));
+        get("/user/assignment", new AssignUser(userAssignmentRepository, userRepository, signRequest, gson));
         get("/user/unassignment", new UnassignUser(userAssignmentRepository, signRequest, gson));
 
         exception(Exception.class, (exception, request, response) -> {
