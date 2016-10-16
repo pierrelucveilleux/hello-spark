@@ -29,7 +29,7 @@ public class OAuthRequest {
     private final String consumerKey;
     private boolean signFetchEnabled;
 
-    public OAuthRequest(String consumerSecret, String consumerKey, boolean signFetchEnabled) {
+    public OAuthRequest(String consumerKey, String consumerSecret, boolean signFetchEnabled) {
         this.consumerSecret = consumerSecret;
         this.consumerKey = consumerKey;
         this.signFetchEnabled = signFetchEnabled;
