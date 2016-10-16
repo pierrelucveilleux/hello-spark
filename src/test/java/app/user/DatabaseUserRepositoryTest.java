@@ -7,6 +7,7 @@ import support.database.DatabaseMigrator;
 import support.database.DriverManagerDataSource;
 
 import javax.sql.DataSource;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -62,6 +63,6 @@ public class DatabaseUserRepositoryTest {
     }
 
     private User someUser() {
-        return new User("uuid", "82fdb185-10e7-4780-a5e6-69a3e74c9eec", "first", "last", "an-email@gmail.com");
+        return new User(UUID.randomUUID().toString(), "82fdb185-10e7-4780-a5e6-69a3e74c9eec", "first", "last", "an-email@gmail.com");
     }
 }

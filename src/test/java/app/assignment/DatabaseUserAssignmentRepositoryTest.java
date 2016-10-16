@@ -13,6 +13,7 @@ import support.database.DatabaseMigrator;
 import support.database.DriverManagerDataSource;
 
 import javax.sql.DataSource;
+import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -36,7 +37,7 @@ public class DatabaseUserAssignmentRepositoryTest {
         userAssignmentRepository = new DatabaseUserAssignmentRepository(dataSource);
 
         accountId = accountRepository.create(PricingModel.Free);
-        userId = userRepository.create(new User("uuid", "openid", "first", "last", "email"));
+        userId = userRepository.create(someUser());
     }
 
     @Test
@@ -79,12 +80,16 @@ public class DatabaseUserAssignmentRepositoryTest {
         UserAssignment assignment = new UserAssignment(userId, accountId);
         userAssignmentRepository.assign(assignment);
 
-        String otherUserId = userRepository.create(new User("uuid", "openid", "first", "last", "email"));
+        String otherUserId = userRepository.create(someUser());
         UserAssignment otherAssignment = new UserAssignment(otherUserId, accountId);
         userAssignmentRepository.assign(otherAssignment);
 
         assertThat(userAssignmentRepository.unassignAllUsers(accountId), is(true));
         assertThat(userAssignmentRepository.isAssigned(assignment), is(false));
         assertThat(userAssignmentRepository.isAssigned(otherAssignment), is(false));
+    }
+
+    public User someUser() {
+        return new User(UUID.randomUUID().toString(), "openid", "first", "last", "email");
     }
 }

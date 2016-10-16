@@ -6,7 +6,6 @@ import support.database.DatabaseException;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.UUID;
 
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
@@ -22,15 +21,14 @@ public class DatabaseUserRepository implements UserRepository {
 
     @Override
     public String create(User user) {
-        String id = UUID.randomUUID().toString();
         try {
             DSLContext database = database(dataSource.getConnection());
             int created = database
                     .insertInto(table("users"), field("id"), field("openid"), field("name"), field("lastname"), field("email"))
-                    .values(id, user.openid(), user.firstName(), user.lastName(), user.email())
+                    .values(user.uuid(), user.openid(), user.firstName(), user.lastName(), user.email())
                     .execute();
             if (created == 1) {
-                return id;
+                return user.uuid();
             }
         } catch (SQLException e) {
             throw new DatabaseException("Cannot create user:" + user.email(), e);
