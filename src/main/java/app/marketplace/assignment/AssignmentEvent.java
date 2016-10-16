@@ -7,5 +7,5 @@ public class AssignmentEvent {
     public String type;
     public MarketPlace marketplace;
     public User creator;
-    public PayLoad payLoad;
+    public PayLoad payload;
 }

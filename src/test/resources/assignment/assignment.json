@@ -5,7 +5,7 @@
     "partner": "APPDIRECT"
   },
   "creator": {
-    "email": "c734676b-40f6-4783-b4ee-e20d59bbf943",
+    "email": "test-email+creator@appdirect.com",
     "firstName": "Another",
     "language": "en",
     "lastName": "User",
@@ -19,11 +19,9 @@
       "status": "ACTIVE"
     },
     "user": {
-      "email": "c734676b-40f6-4783-b4ee-e20d59bbf943",
+      "email": "test-email+user@appdirect.com",
       "firstName": "Another",
-      "language": "en",
       "lastName": "User",
-      "locale": "en_US",
       "openId": "https://www.acme.com/openid/id/7ac30510-c54c-45ca-9c2f-f4d6b3aa2c15",
       "uuid": "7ac30510-c54c-45ca-9c2f-f4d6b3aa2c15"
     }

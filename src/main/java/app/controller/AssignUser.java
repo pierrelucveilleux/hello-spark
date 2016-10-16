@@ -44,8 +44,8 @@ public class AssignUser implements Route {
 
             AssignmentEvent event = new EventReader<AssignmentEvent>(gson).read(body.get(), AssignmentEvent.class);
 
-            String accountIdentifier = event.payLoad.account.accountIdentifier;
-            String uuid = event.payLoad.user.uuid;
+            String accountIdentifier = event.payload.account.accountIdentifier;
+            String uuid = event.payload.user.uuid;
 
             userAssignmentRepository.assign(new UserAssignment(uuid, accountIdentifier));
 
