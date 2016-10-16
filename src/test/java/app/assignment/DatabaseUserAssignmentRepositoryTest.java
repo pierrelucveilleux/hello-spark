@@ -36,7 +36,7 @@ public class DatabaseUserAssignmentRepositoryTest {
         userAssignmentRepository = new DatabaseUserAssignmentRepository(dataSource);
 
         accountId = accountRepository.create(PricingModel.Free);
-        userId = userRepository.create(new User("openid", "first", "last", "email"));
+        userId = userRepository.create(new User("uuid", "openid", "first", "last", "email"));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class DatabaseUserAssignmentRepositoryTest {
         UserAssignment assignment = new UserAssignment(userId, accountId);
         userAssignmentRepository.assign(assignment);
 
-        String otherUserId = userRepository.create(new User("openid", "first", "last", "email"));
+        String otherUserId = userRepository.create(new User("uuid", "openid", "first", "last", "email"));
         UserAssignment otherAssignment = new UserAssignment(otherUserId, accountId);
         userAssignmentRepository.assign(otherAssignment);
 

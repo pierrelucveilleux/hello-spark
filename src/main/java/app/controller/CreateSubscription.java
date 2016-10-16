@@ -68,7 +68,7 @@ public class CreateSubscription implements Route {
 
     private String createUserAndAssingAccount(SubscriptionEvent subscription) {
         User creator = subscription.creator;
-        return userRepository.create(new app.user.User(creator.uuid, creator.firstName, creator.lastName, creator.email));
+        return userRepository.create(new app.user.User(creator.uuid, creator.openId, creator.firstName, creator.lastName, creator.email));
     }
 
     private String createAcountFrom(SubscriptionEvent subscription) {

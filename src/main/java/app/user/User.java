@@ -17,13 +17,6 @@ public class User {
         this.email = email;
     }
 
-    public User(String openid, String firstName, String lastName, String email) {
-        this.openid = openid;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
-
     public String uuid() {
         return uuid;
     }

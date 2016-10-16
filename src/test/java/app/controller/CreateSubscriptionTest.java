@@ -86,7 +86,7 @@ public class CreateSubscriptionTest {
 
         subscribe.handle(request, response);
 
-        verify(userRepository).create(argThat(user(someUser("12345"))));
+        verify(userRepository).create(argThat(user(someUser())));
     }
 
     @Test
@@ -113,7 +113,12 @@ public class CreateSubscriptionTest {
         assertThat(result, hasJsonPath("accountIdentifier", equalTo("12345")));
     }
 
-    private User someUser(String accountId) {
-        return new User("ec5d8eda-5cec-444d-9e30-125b6e4b67e2", "DummyCreatorFirst", "DummyCreatorLast", "test-email+creator@appdirect.com");
+    private User someUser() {
+        return new User(
+                "ec5d8eda-5cec-444d-9e30-125b6e4b67e2",
+                "https://www.appdirect.com/openid/id/ec5d8eda-5cec-444d-9e30-125b6e4b67e2",
+                "DummyCreatorFirst",
+                "DummyCreatorLast",
+                "test-email+creator@appdirect.com");
     }
 }
