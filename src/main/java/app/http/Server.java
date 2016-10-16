@@ -35,12 +35,12 @@ public class Server {
     public void start(int port) {
         port(port);
 
+        staticFiles.location("/webapp");
+
         AccountRepository accountRepository = new DatabaseAccountRepository(datasource);
         UserRepository userRepository = new DatabaseUserRepository(datasource);
         UserAssignmentRepository userAssignmentRepository = new DatabaseUserAssignmentRepository(datasource);
 
-        redirect.get("/", "/musicals");
-        staticFiles.location("/webapp");
         OAuthRequest signRequest = new OAuthRequest("job-138569", "xYTtH7x1Du0Y", true);
 
         Config config = new OpenIdConfigFactory().build();
@@ -54,6 +54,7 @@ public class Server {
 
         before("/musicals", userMustBeAuthentified);
         get("/musicals", new ListMusicals());
+        redirect.get("/", "/musicals");
 
         get("/subscription/create", new CreateSubscription(accountRepository, userRepository, userAssignmentRepository, signRequest, gson));
         get("/subscription/change", new ChangeSubscription(accountRepository, signRequest, gson));
