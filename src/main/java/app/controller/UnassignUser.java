@@ -47,7 +47,7 @@ public class UnassignUser implements Route {
             String accountIdentifier = event.payload.account.accountIdentifier;
 
             app.marketplace.User user = event.payload.user;
-            userAssignmentRepository.assign(new UserAssignment(user.uuid, accountIdentifier));
+            userAssignmentRepository.unassign(new UserAssignment(user.uuid, accountIdentifier));
 
             logger.info("User unassigned : " + user.uuid +  " to account " + body);
             return gson.toJson(succesUser());
