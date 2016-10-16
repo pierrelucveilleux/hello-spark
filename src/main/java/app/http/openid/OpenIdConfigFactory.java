@@ -16,7 +16,7 @@ public class OpenIdConfigFactory implements ConfigFactory {
         Clients clients = new Clients("https://pluc-says-hello-spark.herokuapp.com/callback", appDirectClient);
         Config config = new Config(clients);
         config.addAuthorizer("custom", new IsAuthenticatedAuthorizer());
-        config.addMatcher("excludedPath", new ExcludedPathMatcher("^/login$"));
+        config.addMatcher("excludedPath", new ExcludedPathMatcher("^/openid$"));
         config.setHttpActionAdapter(new DefaultHttpActionAdapter());
         return config;
     }

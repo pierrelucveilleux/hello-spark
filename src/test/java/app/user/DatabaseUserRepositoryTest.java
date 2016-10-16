@@ -8,8 +8,7 @@ import support.database.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DatabaseUserRepositoryTest {
@@ -46,13 +45,20 @@ public class DatabaseUserRepositoryTest {
     }
 
     @Test
-    public void canFindUserByUuid() throws Exception {
+    public void returnsUserIfUserCanBeFindByUuid() throws Exception {
         String uuid = userRepository.create(someUser());
 
         User user = userRepository.findByUuid(uuid);
 
         assertThat(user.uuid(), equalTo(uuid));
         assertThat(user.openid(), equalTo("82fdb185-10e7-4780-a5e6-69a3e74c9eec"));
+    }
+
+    @Test
+    public void returnsNullIfUserCannotBeFindByUuid() throws Exception {
+        User user = userRepository.findByUuid("inexisting");
+
+        assertThat(user, nullValue());
     }
 
     private User someUser() {

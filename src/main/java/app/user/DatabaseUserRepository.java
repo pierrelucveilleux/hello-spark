@@ -58,6 +58,9 @@ public class DatabaseUserRepository implements UserRepository {
                     .select(field("id"), field("openid"), field("name"), field("lastname"), field("email")).from(table("users"))
                     .where(field("id").eq(uuid))
                     .fetchOne();
+            if(userRead == null) {
+                return null;
+            }
             return new User((String) userRead.getValue("id"), (String) userRead.getValue("openid"), (String) userRead.getValue("name"), (String) userRead.getValue("lastname"), (String) userRead.getValue("email"));
         } catch (SQLException e) {
             throw new DatabaseException("Cannot find user with uuid:" + uuid, e);
