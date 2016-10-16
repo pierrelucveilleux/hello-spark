@@ -1,6 +1,7 @@
 package app.controller;
 
 import app.account.AccountRepository;
+import app.assignment.UserAssignmentRepository;
 import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,7 @@ public class CancelSubscriptionTest {
 
     CancelSubscription subscribe;
     AccountRepository accountRepository;
+    UserAssignmentRepository userAssignmentRepository;
     OAuthRequest oAuthRequest;
     Request request;
     Response response;
@@ -32,7 +34,8 @@ public class CancelSubscriptionTest {
 
         oAuthRequest = mock(OAuthRequest.class);
         accountRepository = mock(AccountRepository.class);
-        subscribe = new CancelSubscription(accountRepository, oAuthRequest, new Gson());
+        userAssignmentRepository = mock(UserAssignmentRepository.class);
+        subscribe = new CancelSubscription(accountRepository, userAssignmentRepository, oAuthRequest, new Gson());
     }
 
 
@@ -59,11 +62,20 @@ public class CancelSubscriptionTest {
     @Test
     public void removeSubscriptionInRepository() throws Exception {
         when(request.queryParams("eventUrl")).thenReturn("http://appdirect.com/event/1");
-        when(oAuthRequest.read(anyString())).thenReturn(of(resource("subscription/create.json")));
+        when(oAuthRequest.read(anyString())).thenReturn(of(resource("subscription/cancel.json")));
 
         subscribe.handle(request, response);
 
-        verify(accountRepository).remove("12345");
+        verify(accountRepository).remove("7aa211cc-f0d4-457c-b53b-0d3f13d5a24b");
     }
 
+    @Test
+    public void unasignedUserWhenAccountIsCancelled() throws Exception {
+        when(request.queryParams("eventUrl")).thenReturn("http://appdirect.com/event/1");
+        when(oAuthRequest.read(anyString())).thenReturn(of(resource("subscription/cancel.json")));
+
+        subscribe.handle(request, response);
+
+        verify(userAssignmentRepository).unassignAllUsers("7aa211cc-f0d4-457c-b53b-0d3f13d5a24b");
+    }
 }

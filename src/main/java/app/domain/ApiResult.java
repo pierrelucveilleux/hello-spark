@@ -14,7 +14,11 @@ public class ApiResult {
         this.errorMessage = errorMessage;
     }
 
-    public static ApiResult succes(String accountIdentifier) {
+    public static ApiResult succesUser() {
+        return new ApiResult(true, null, null, null);
+    }
+
+    public static ApiResult succesAccount(String accountIdentifier) {
         return new ApiResult(true, accountIdentifier, null, null);
     }
 

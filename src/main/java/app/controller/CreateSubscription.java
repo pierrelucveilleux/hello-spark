@@ -2,10 +2,11 @@ package app.controller;
 
 import app.account.AccountRepository;
 import app.account.PricingModel;
-import app.marketplace.subscription.Creator;
+import app.assignment.UserAssignment;
+import app.assignment.UserAssignmentRepository;
+import app.marketplace.User;
 import app.marketplace.subscription.SubsciptionReader;
 import app.marketplace.subscription.SubscriptionEvent;
-import app.user.User;
 import app.user.UserRepository;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 import static app.account.PricingModel.fromValue;
 import static app.domain.ApiResult.error;
-import static app.domain.ApiResult.succes;
+import static app.domain.ApiResult.succesAccount;
 
 public class CreateSubscription implements Route {
 
@@ -28,12 +29,14 @@ public class CreateSubscription implements Route {
 
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
+    private final UserAssignmentRepository userAssignmentRepository;
     private final OAuthRequest oAuthRequest;
     private final Gson json;
 
-    public CreateSubscription(AccountRepository accountRepository, UserRepository userRepository, OAuthRequest oAuthRequest, Gson gson) {
+    public CreateSubscription(AccountRepository accountRepository, UserRepository userRepository, UserAssignmentRepository userAssignmentRepository, OAuthRequest oAuthRequest, Gson gson) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
+        this.userAssignmentRepository = userAssignmentRepository;
         this.oAuthRequest = oAuthRequest;
         this.json = gson;
     }
@@ -52,20 +55,20 @@ public class CreateSubscription implements Route {
             String accountId = createAcountFrom(subscription);
             logger.info("Created account: " + accountId);
 
-            String userId = createUserAndAssingAccount(subscription, accountId);
+            String userId = createUserAndAssingAccount(subscription);
             logger.info("Created user: " + userId);
 
-            return json.toJson(succes(accountId));
+            userAssignmentRepository.assign(new UserAssignment(userId, accountId));
+
+            return json.toJson(succesAccount(accountId));
         } else {
             return json.toJson(error("INTERNAL_ERROR", "Cannot read subscription"));
         }
     }
 
-    private String createUserAndAssingAccount(SubscriptionEvent subscription, String accountId) {
-        Creator creator = subscription.creator;
-        User user = new User(creator.uuid, creator.firstName, creator.lastName, creator.email);
-        user.accountId(accountId);
-        return userRepository.create(user);
+    private String createUserAndAssingAccount(SubscriptionEvent subscription) {
+        User creator = subscription.creator;
+        return userRepository.create(new app.user.User(creator.uuid, creator.firstName, creator.lastName, creator.email));
     }
 
     private String createAcountFrom(SubscriptionEvent subscription) {

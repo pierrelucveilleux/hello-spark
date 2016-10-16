@@ -9,7 +9,7 @@ import spark.Response;
 import spark.Route;
 import support.OAuthRequest;
 
-import static app.domain.ApiResult.succes;
+import static app.domain.ApiResult.succesAccount;
 import static java.util.Arrays.asList;
 
 public class ChangeSubscription implements Route {
@@ -33,6 +33,6 @@ public class ChangeSubscription implements Route {
         request.queryParams().forEach((k) -> logger.info("Item : " + k + " Value: " + asList(request.queryParamsValues(k))));
 
         response.type("application/json");
-        return gson.toJson(succes("account-123"));
+        return gson.toJson(succesAccount("account-123"));
     }
 }

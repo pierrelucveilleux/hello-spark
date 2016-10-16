@@ -1,6 +1,7 @@
 package app.controller;
 
 import app.account.AccountRepository;
+import app.assignment.UserAssignmentRepository;
 import app.marketplace.subscription.SubsciptionReader;
 import app.marketplace.subscription.SubscriptionEvent;
 import com.google.gson.Gson;
@@ -15,18 +16,20 @@ import support.OAuthRequest;
 import java.util.Optional;
 
 import static app.domain.ApiResult.error;
-import static app.domain.ApiResult.succes;
+import static app.domain.ApiResult.succesAccount;
 
 public class CancelSubscription implements Route {
 
     private Logger logger = LoggerFactory.getLogger(CancelSubscription.class);
 
     private final AccountRepository accountRepository;
+    private final UserAssignmentRepository userAssignmentRepository;
     private final OAuthRequest oAuthRequest;
     private final Gson gson;
 
-    public CancelSubscription(AccountRepository accountRepository, OAuthRequest oAuthRequest, Gson gson) {
+    public CancelSubscription(AccountRepository accountRepository, UserAssignmentRepository userAssignmentRepository, OAuthRequest oAuthRequest, Gson gson) {
         this.accountRepository = accountRepository;
+        this.userAssignmentRepository = userAssignmentRepository;
         this.oAuthRequest = oAuthRequest;
         this.gson = gson;
     }
@@ -45,8 +48,10 @@ public class CancelSubscription implements Route {
             String accountId = subscriptionEvent.payload.account.accountIdentifier;
             accountRepository.remove(accountId);
 
+            userAssignmentRepository.unassignAllUsers(accountId);
+
             logger.info("Removed account: " + accountId +  ", Body: " + body);
-            return gson.toJson(succes(accountId));
+            return gson.toJson(succesAccount(accountId));
         } else {
             return gson.toJson(error("INTERNAL_ERROR", "Cannot read subscription"));
         }

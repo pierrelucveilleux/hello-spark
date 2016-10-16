@@ -2,6 +2,7 @@ package app.controller;
 
 import app.account.AccountRepository;
 import app.account.PricingModel;
+import app.assignment.UserAssignmentRepository;
 import app.user.User;
 import app.user.UserRepository;
 import com.google.gson.Gson;
@@ -11,6 +12,7 @@ import spark.Request;
 import spark.Response;
 import support.OAuthRequest;
 
+import static app.controller.UserAssignementMatcher.assignment;
 import static app.user.UserMatcher.user;
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 import static java.util.Optional.empty;
@@ -28,6 +30,7 @@ public class CreateSubscriptionTest {
     CreateSubscription subscribe;
     AccountRepository accountRepository;
     UserRepository userRepository;
+    UserAssignmentRepository userAssignmentRepository;
     OAuthRequest signRequest;
     Request request;
     Response response;
@@ -40,8 +43,9 @@ public class CreateSubscriptionTest {
         signRequest = mock(OAuthRequest.class);
         accountRepository = mock(AccountRepository.class);
         userRepository = mock(UserRepository.class);
+        userAssignmentRepository = mock(UserAssignmentRepository.class);
 
-        subscribe = new CreateSubscription(accountRepository, userRepository, signRequest, new Gson());
+        subscribe = new CreateSubscription(accountRepository, userRepository, userAssignmentRepository, signRequest, new Gson());
     }
 
     @Test
@@ -86,6 +90,18 @@ public class CreateSubscriptionTest {
     }
 
     @Test
+    public void assignUserToAccount() throws Exception {
+        when(request.queryParams("eventUrl")).thenReturn("http://appdirect.com/event/1");
+        when(signRequest.read(anyString())).thenReturn(of(resource("subscription/create.json")));
+        when(accountRepository.create(eq(PricingModel.Free))).thenReturn("12345");
+        when(userRepository.create(any(User.class))).thenReturn("9x9x9x");
+
+        subscribe.handle(request, response);
+
+        verify(userAssignmentRepository).assign(argThat(assignment("9x9x9x", "12345")));
+    }
+
+    @Test
     public void returnsAccountIdentifierOnSuccess() throws Exception {
         when(request.queryParams("eventUrl")).thenReturn("http://appdirect.com/event/1");
         when(signRequest.read(anyString())).thenReturn(of(resource("subscription/create.json")));
@@ -98,8 +114,6 @@ public class CreateSubscriptionTest {
     }
 
     private User someUser(String accountId) {
-        User user = new User("ec5d8eda-5cec-444d-9e30-125b6e4b67e2", "DummyCreatorFirst", "DummyCreatorLast", "test-email+creator@appdirect.com");
-        user.accountId(accountId);
-        return user;
+        return new User("ec5d8eda-5cec-444d-9e30-125b6e4b67e2", "DummyCreatorFirst", "DummyCreatorLast", "test-email+creator@appdirect.com");
     }
 }

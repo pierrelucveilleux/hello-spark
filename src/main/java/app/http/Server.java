@@ -3,9 +3,9 @@ package app.http;
 import app.HelloApp;
 import app.account.AccountRepository;
 import app.account.DatabaseAccountRepository;
-import app.controller.CancelSubscription;
-import app.controller.ChangeSubscription;
-import app.controller.CreateSubscription;
+import app.assignment.DatabaseUserAssignmentRepository;
+import app.assignment.UserAssignmentRepository;
+import app.controller.*;
 import app.http.openid.OpenIdConfigFactory;
 import app.user.DatabaseUserRepository;
 import app.user.UserRepository;
@@ -35,6 +35,11 @@ public class Server {
     public void start(int port) {
         port(port);
 
+        AccountRepository accountRepository = new DatabaseAccountRepository(datasource);
+        UserRepository userRepository = new DatabaseUserRepository(datasource);
+        UserAssignmentRepository userAssignmentRepository = new DatabaseUserAssignmentRepository(datasource);
+
+        redirect.get("/", "/musicals");
         staticFiles.location("/webapp");
         OAuthRequest signRequest = new OAuthRequest("job-138569", "xYTtH7x1Du0Y", true);
 
@@ -47,21 +52,20 @@ public class Server {
         get("/openid", new OpenIdLogin());
 //        post("/authenticate", new AuthenticatUser(new MemoryAuthenticationService()));
 
-        redirect.get("/", "/musicals");
         before("/musicals", userMustBeAuthentified);
         get("/musicals", new ListMusicals());
 
-        AccountRepository accountRepository = new DatabaseAccountRepository(datasource);
-        UserRepository userRepository = new DatabaseUserRepository(datasource);
-        get("/subscription/create", new CreateSubscription(accountRepository, userRepository, signRequest, gson));
+        get("/subscription/create", new CreateSubscription(accountRepository, userRepository, userAssignmentRepository, signRequest, gson));
         get("/subscription/change", new ChangeSubscription(accountRepository, signRequest, gson));
-        get("/subscription/cancel", new CancelSubscription(accountRepository, signRequest, gson));
+        get("/subscription/cancel", new CancelSubscription(accountRepository, userAssignmentRepository, signRequest, gson));
+
+        get("/assignment", new AssignUser(userAssignmentRepository, signRequest, gson));
+        get("/unassignment", new UnassignUser(userAssignmentRepository, signRequest, gson));
 
         exception(Exception.class, (exception, request, response) -> {
             logger.error("An error occured !!", exception);
             response.status(503);
             response.body("Server error");
         });
-
     }
 }

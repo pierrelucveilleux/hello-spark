@@ -1,6 +1,6 @@
-package app.marketplace.subscription;
+package app.marketplace;
 
-public class Creator {
+public class User {
     public String uuid;
     public String openId;
     public String email;
