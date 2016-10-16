@@ -13,8 +13,7 @@ public class OpenIdConfigFactory implements ConfigFactory {
     @Override
     public Config build() {
         Client appDirectClient = new AppDirectOpenIdClient();
-        // pluc-says-hello-spark.herokuapp.com
-        Clients clients = new Clients("https://localhost:8080/callback", appDirectClient);
+        Clients clients = new Clients("https://pluc-says-hello-spark.herokuapp.com/callback", appDirectClient);
         Config config = new Config(clients);
         config.addAuthorizer("custom", new IsAuthenticatedAuthorizer());
         config.addMatcher("excludedPath", new ExcludedPathMatcher("^/login$"));
