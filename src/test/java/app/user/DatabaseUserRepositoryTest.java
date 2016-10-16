@@ -27,19 +27,25 @@ public class DatabaseUserRepositoryTest {
 
     @Test
     public void canCreateUser() throws Exception {
-        User user = new User("Some name", "an-email@gmail.com");
-        String id = userRepository.create(user);
+        String id = userRepository.create(someUser());
 
         assertThat(id, notNullValue());
     }
 
     @Test
     public void canFindUserByEmail() throws Exception {
-        userRepository.create(new User("Some name", "someuser@email.com"));
+        String uuid = userRepository.create(someUser());
 
-        User user = userRepository.findByEmail("someuser@email.com");
+        User user = userRepository.findByEmail("an-email@gmail.com");
 
-        assertThat(user.email(), equalTo("someuser@email.com"));
-        assertThat(user.name(), equalTo("Some name"));
+        assertThat(user.uuid(), equalTo(uuid));
+        assertThat(user.openid(), equalTo("82fdb185-10e7-4780-a5e6-69a3e74c9eec"));
+        assertThat(user.firstName(), equalTo("first"));
+        assertThat(user.lastName(), equalTo("last"));
+        assertThat(user.email(), equalTo("an-email@gmail.com"));
+    }
+
+    private User someUser() {
+        return new User("uuid", "82fdb185-10e7-4780-a5e6-69a3e74c9eec", "first", "last", "an-email@gmail.com");
     }
 }

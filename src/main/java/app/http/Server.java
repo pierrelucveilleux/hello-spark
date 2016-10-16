@@ -1,11 +1,18 @@
 package app.http;
 
 import app.HelloApp;
+import app.account.AccountRepository;
 import app.account.DatabaseAccountRepository;
-import app.auth.MemoryAuthenticationService;
-import app.controller.*;
-import app.domain.Message;
+import app.controller.CancelSubscription;
+import app.controller.ChangeSubscription;
+import app.controller.CreateSubscription;
+import app.http.openid.OpenIdConfigFactory;
+import app.user.DatabaseUserRepository;
+import app.user.UserRepository;
 import com.google.gson.Gson;
+import org.pac4j.core.config.Config;
+import org.pac4j.sparkjava.CallbackRoute;
+import org.pac4j.sparkjava.SecurityFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.OAuthRequest;
@@ -28,31 +35,28 @@ public class Server {
     public void start(int port) {
         port(port);
 
-        OAuthRequest oAuthRequest = new OAuthRequest("job-138569", "xYTtH7x1Du0Y", true);
         staticFiles.location("/webapp");
+        OAuthRequest signRequest = new OAuthRequest("job-138569", "xYTtH7x1Du0Y", true);
 
-        redirect.get("/", "/login");
+        Config config = new OpenIdConfigFactory().build();
+        CallbackRoute callback = new CallbackRoute(config, null, true);
+        get("/callback", callback);
+        post("/callback", callback);
 
-//        List<String> publicPaths = new ArrayList<>();
-//        publicPaths.add("/");
-//        publicPaths.add("/login");
-//        publicPaths.add("/api/subscription/create");
-//        publicPaths.add("/api/subscription/cancel");
-
-//        before("/subscription/*", new RequiresAuthenticationFilter(config, "FacebookClient"));
-
-        get("/login", new LoginUser());
+        SecurityFilter userMustBeAuthentified = new SecurityFilter(config, "AppDirectOpenIdClient", "", "excludedPath");
         get("/openid", new OpenIdLogin());
-        post("/authenticate", new AuthenticatUser(new MemoryAuthenticationService()));
+//        post("/authenticate", new AuthenticatUser(new MemoryAuthenticationService()));
+
+        redirect.get("/", "/musicals");
+        before("/musicals", userMustBeAuthentified);
         get("/musicals", new ListMusicals());
 
+        AccountRepository accountRepository = new DatabaseAccountRepository(datasource);
+        UserRepository userRepository = new DatabaseUserRepository(datasource);
+        get("/subscription/create", new CreateSubscription(accountRepository, userRepository, signRequest, gson));
+        get("/subscription/change", new ChangeSubscription(accountRepository, signRequest, gson));
+        get("/subscription/cancel", new CancelSubscription(accountRepository, signRequest, gson));
 
-        get("/subscription/create", new CreateSubscription(new DatabaseAccountRepository(datasource), oAuthRequest, gson));
-        get("/subscription/change", new ChangeSubscription(new DatabaseAccountRepository(datasource), oAuthRequest, gson));
-        get("/subscription/cancel", new CancelSubscription(new DatabaseAccountRepository(datasource), oAuthRequest, gson));
-        get("/hello/:name", (request, response) -> "Hello: " + request.params(":name"));
-        get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);
-        get("/json/hello/:name", "application/json", (request, response) -> new Message("Hello, ", request.params("name")), gson::toJson);
         exception(Exception.class, (exception, request, response) -> {
             logger.error("An error occured !!", exception);
             response.status(503);

@@ -26,8 +26,8 @@ public class DatabaseUserRepository implements UserRepository {
         try {
             DSLContext database = database(dataSource.getConnection());
             int created = database
-                    .insertInto(table("users"), field("id"), field("name"), field("email"))
-                    .values(id, user.name(), user.email())
+                    .insertInto(table("users"), field("id"), field("openid"), field("name"), field("lastname"), field("email"))
+                    .values(id, user.openid(), user.firstName(), user.lastName(), user.email())
                     .execute();
             if (created == 1) {
                 return id;
@@ -42,10 +42,10 @@ public class DatabaseUserRepository implements UserRepository {
     public User findByEmail(String email) {
         try {
             Record userRead = database(dataSource.getConnection())
-                    .select(field("id"), field("name"), field("email")).from(table("users"))
+                    .select(field("id"), field("openid"), field("name"), field("lastname"), field("email")).from(table("users"))
                     .where(field("email").eq(email))
                     .fetchOne();
-            return new User((String) userRead.getValue("id"), (String) userRead.getValue("name"), (String) userRead.getValue("email"));
+            return new User((String) userRead.getValue("id"), (String) userRead.getValue("openid"), (String) userRead.getValue("name"), (String) userRead.getValue("lastname"), (String) userRead.getValue("email"));
         } catch (SQLException e) {
             throw new DatabaseException("Cannot find user with email:" + email, e);
         }

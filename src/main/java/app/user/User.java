@@ -2,34 +2,64 @@ package app.user;
 
 public class User {
 
-    private String id;
-    private final String name;
+    private String uuid;
+    private String accountId;
+    private final String openid;
+    private final String firstName;
+    private final String lastName;
     private final String email;
 
-    public User(String id, String name, String email) {
-        this.id = id;
-        this.name = name;
+    public User(String uuid, String openid, String firstName, String lastName, String email) {
+        this.uuid = uuid;
+        this.openid = openid;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
     }
 
-    public User(String name, String email) {
-        this.name = name;
+    public User(String openid, String firstName, String lastName, String email) {
+        this.openid = openid;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
     }
 
-    public void id(String id) {
-        this.id = id;
+    public String uuid() {
+        return uuid;
     }
 
-    public String id() {
-        return id;
+    public String openid() {
+        return openid;
     }
 
-    public String name() {
-        return name;
+    public String firstName() {
+        return firstName;
+    }
+
+    public String lastName() {
+        return lastName;
     }
 
     public String email() {
         return email;
+    }
+
+    public String accountId() {
+        return accountId;
+    }
+
+    public void accountId(String accountId) {
+        this.accountId = accountId;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uuid='" + uuid + '\'' +
+                ", openid='" + openid + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

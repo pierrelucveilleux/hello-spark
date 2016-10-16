@@ -1,7 +1,6 @@
 package app.user;
 
-interface UserRepository {
-
+public interface UserRepository {
     String create(User user);
 
     User findByEmail(String email);

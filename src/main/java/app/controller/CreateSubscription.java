@@ -2,8 +2,11 @@ package app.controller;
 
 import app.account.AccountRepository;
 import app.account.PricingModel;
+import app.marketplace.subscription.Creator;
 import app.marketplace.subscription.SubsciptionReader;
 import app.marketplace.subscription.SubscriptionEvent;
+import app.user.User;
+import app.user.UserRepository;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +27,15 @@ public class CreateSubscription implements Route {
     private Logger logger = LoggerFactory.getLogger(CreateSubscription.class);
 
     private final AccountRepository accountRepository;
+    private final UserRepository userRepository;
     private final OAuthRequest oAuthRequest;
-    private final Gson gson;
+    private final Gson json;
 
-    public CreateSubscription(AccountRepository accountRepository, OAuthRequest oAuthRequest, Gson gson) {
+    public CreateSubscription(AccountRepository accountRepository, UserRepository userRepository, OAuthRequest oAuthRequest, Gson gson) {
         this.accountRepository = accountRepository;
+        this.userRepository = userRepository;
         this.oAuthRequest = oAuthRequest;
-        this.gson = gson;
+        this.json = gson;
     }
 
     @Override
@@ -39,19 +44,32 @@ public class CreateSubscription implements Route {
 
         response.type("application/json");
 
-        Optional<String> body = oAuthRequest.read(request.queryParams("eventUrl"));
-        if(body.isPresent()) {
-            SubsciptionReader subsciptionReader = new SubsciptionReader(gson);
-            logger.info("Read event", body.get());
-            SubscriptionEvent subscriptionEvent = subsciptionReader.read(body.get());
+        Optional<String> event = oAuthRequest.read(request.queryParams("eventUrl"));
+        if(event.isPresent()) {
+            logger.info("Read subscription ", event.get());
+            SubscriptionEvent subscription = new SubsciptionReader(json).read(event.get());
 
-            PricingModel pricingModel = fromValue(subscriptionEvent.payload.order.editionCode);
-            String accountId = accountRepository.create(pricingModel);
+            String accountId = createAcountFrom(subscription);
+            logger.info("Created account: " + accountId);
 
-            logger.info("Created account: " + accountId +  ", Body: " + body);
-            return gson.toJson(succes(accountId));
+            String userId = createUserAndAssingAccount(subscription, accountId);
+            logger.info("Created user: " + userId);
+
+            return json.toJson(succes(accountId));
         } else {
-            return gson.toJson(error("INTERNAL_ERROR", "Cannot read subscription"));
+            return json.toJson(error("INTERNAL_ERROR", "Cannot read subscription"));
         }
+    }
+
+    private String createUserAndAssingAccount(SubscriptionEvent subscription, String accountId) {
+        Creator creator = subscription.creator;
+        User user = new User(creator.uuid, creator.firstName, creator.lastName, creator.email);
+        user.accountId(accountId);
+        return userRepository.create(user);
+    }
+
+    private String createAcountFrom(SubscriptionEvent subscription) {
+        PricingModel pricingModel = fromValue(subscription.payload.order.editionCode);
+        return accountRepository.create(pricingModel);
     }
 }

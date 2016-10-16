@@ -1,6 +1,6 @@
 package app.controller;
 
-import app.account.DatabaseAccountRepository;
+import app.account.AccountRepository;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +16,11 @@ public class ChangeSubscription implements Route {
 
     private Logger logger = LoggerFactory.getLogger(CancelSubscription.class);
 
-    private final DatabaseAccountRepository accountRepository;
+    private final AccountRepository accountRepository;
     private final OAuthRequest oAuthRequest;
     private final Gson gson;
 
-    public ChangeSubscription(DatabaseAccountRepository accountRepository, OAuthRequest oAuthRequest, Gson gson) {
+    public ChangeSubscription(AccountRepository accountRepository, OAuthRequest oAuthRequest, Gson gson) {
         this.accountRepository = accountRepository;
         this.oAuthRequest = oAuthRequest;
         this.gson = gson;
