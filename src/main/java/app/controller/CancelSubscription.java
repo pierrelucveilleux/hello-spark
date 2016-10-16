@@ -46,9 +46,8 @@ public class CancelSubscription implements Route {
             SubscriptionEvent subscriptionEvent = new SubsciptionReader(gson).read(body.get());
 
             String accountId = subscriptionEvent.payload.account.accountIdentifier;
-            accountRepository.remove(accountId);
-
             userAssignmentRepository.unassignAllUsers(accountId);
+            accountRepository.remove(accountId);
 
             logger.info("Removed account: " + accountId +  ", Body: " + body);
             return gson.toJson(succesAccount(accountId));
