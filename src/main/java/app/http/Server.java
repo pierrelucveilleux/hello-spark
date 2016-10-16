@@ -59,8 +59,8 @@ public class Server {
         get("/subscription/change", new ChangeSubscription(accountRepository, signRequest, gson));
         get("/subscription/cancel", new CancelSubscription(accountRepository, userAssignmentRepository, signRequest, gson));
 
-        get("/assignment", new AssignUser(userAssignmentRepository, signRequest, gson));
-        get("/unassignment", new UnassignUser(userAssignmentRepository, signRequest, gson));
+        get("/user/assignment", new AssignUser(userAssignmentRepository, signRequest, gson));
+        get("/user/unassignment", new UnassignUser(userAssignmentRepository, signRequest, gson));
 
         exception(Exception.class, (exception, request, response) -> {
             logger.error("An error occured !!", exception);
