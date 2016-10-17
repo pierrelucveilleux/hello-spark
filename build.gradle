@@ -42,3 +42,9 @@ dependencies {
 task stage {
     dependsOn installDist
 }
+
+task rundev(type:JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'app.HelloApp'
+    args "--dev", true
+}
